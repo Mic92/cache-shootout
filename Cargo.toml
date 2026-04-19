@@ -1,0 +1,18 @@
+[package]
+name    = "cache-shootout"
+version = "0.1.0"
+edition = "2021"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+nix       = { version = "0.29", features = ["signal"] }
+tempfile  = "3"
+tokio     = { version = "1", features = ["rt-multi-thread", "time", "net", "io-util", "macros"] }
+reqwest   = { version = "0.12", default-features = false, features = ["rustls-tls", "stream"] }
+futures   = "0.3"
+base64    = "0.22"
+rand      = "0.8"
+
+[[bench]]
+harness = false
+name    = "http_download"
