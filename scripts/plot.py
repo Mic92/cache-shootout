@@ -73,16 +73,19 @@ def split_server(name: str) -> tuple[str, str]:
     return name, "none"
 
 
-def order_servers(df: pd.DataFrame) -> list[str]:
+def order_servers(df: pd.DataFrame, unit: str) -> list[str]:
     """One ordering shared by every subplot.
 
-    Group by compression first (uncompressed block, then zstd block) and sort
-    each block by mean sequential-NAR throughput. Mixing the two confused
-    readers because zstd "wire MiB/s" counts compressed bytes and is not
-    directly comparable to the uncompressed bars.
+    For ``time`` the bars are directly comparable across compression modes, so
+    just sort by mean sequential-NAR wall time. For ``throughput`` the zstd
+    numerator is compressed bytes, so keep the two compression blocks apart
+    and sort within each.
     """
     seq = df[df["metric"] == "nar_download_c1"]
     base = seq if not seq.empty else df
+    if unit == "time":
+        t = base.groupby("server")["time_s"].mean().sort_values()
+        return list(t.index)
     speed = base.groupby("server")["mibps"].mean()
     servers = list(speed.index)
     servers.sort(
@@ -91,9 +94,9 @@ def order_servers(df: pd.DataFrame) -> list[str]:
     return servers
 
 
-def plot(df: pd.DataFrame, out: Path) -> None:
+def plot(df: pd.DataFrame, out: Path, unit: str) -> None:
     sns.set_theme(style="whitegrid", context="notebook")
-    server_order = order_servers(df)
+    server_order = order_servers(df, unit)
     # Colour by underlying implementation so the none/zstd pair of each server
     # share a hue; the compression axis is encoded as a hatch instead.
     impls = list(dict.fromkeys(split_server(s)[0] for s in server_order))
@@ -127,6 +130,10 @@ def plot(df: pd.DataFrame, out: Path) -> None:
                 d = d.assign(value=d["time_s"] * 1000)
                 xlabel = "time [ms]  ↓"
                 fmt = "{:.1f}"
+            elif unit == "time":
+                d = d.assign(value=d["time_s"])
+                xlabel = "time [s]  ↓"
+                fmt = "{:.2f}"
             else:
                 d = d.assign(value=d["mibps"])
                 xlabel = "socket MiB/s  ↑  (compressed for zstd)"
@@ -157,10 +164,11 @@ def plot(df: pd.DataFrame, out: Path) -> None:
                 patch.set_edgecolor("white")
                 if server in zstd_servers:
                     patch.set_hatch("//")
-            # Visual divider between the uncompressed and zstd blocks.
-            n_none = sum(1 for s in server_order if s not in zstd_servers)
-            if 0 < n_none < len(server_order):
-                ax.axhline(n_none - 0.5, color="0.5", lw=0.8)
+            if unit == "throughput":
+                # Visual divider between the uncompressed and zstd blocks.
+                n_none = sum(1 for s in server_order if s not in zstd_servers)
+                if 0 < n_none < len(server_order):
+                    ax.axhline(n_none - 0.5, color="0.5", lw=0.8)
             conc = metric.removeprefix("nar_download_c")
             title = "narinfo" if metric == "narinfo_all" else f"NAR, {conc} conn"
             ax.set_title(f"{closure} — {title}")
@@ -199,6 +207,13 @@ def main() -> None:
     ap.add_argument("--criterion-dir", type=Path, default=Path("target/criterion"))
     ap.add_argument("--out", type=Path, default=Path("target/plots/shootout.png"))
     ap.add_argument(
+        "--unit",
+        choices=["time", "throughput"],
+        default="time",
+        help="NAR panels: wall time per closure (comparable across compression) "
+        "or wire MiB/s (compressed bytes for zstd variants)",
+    )
+    ap.add_argument(
         "--csv-out",
         type=Path,
         default=None,
@@ -213,7 +228,7 @@ def main() -> None:
             args.csv_out, index=False
         )
         print(f"wrote {args.csv_out}")
-    plot(df, args.out)
+    plot(df, args.out, args.unit)
 
 
 if __name__ == "__main__":

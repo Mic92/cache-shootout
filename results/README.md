@@ -10,24 +10,20 @@ Closures:
 | firefox | 373 | 1541 MiB | ~520 MiB |
 | nixos-minimal | 493 | 1033 MiB | ~420 MiB |
 
-**Wire MiB/s** = bytes read off the TCP socket / wall-clock for one full
-closure pass. The client never decompresses, so:
-
-- `*-none` rows: raw NAR throughput (numerator = uncompressed NAR size).
-- `*-zstd` rows: compressed throughput (numerator = zstd bytes on the wire).
-
-The two blocks are therefore not directly comparable bar-to-bar; the chart
-separates them with a divider. To compare end-to-end, look at `time_s` in
-`ryan.csv` instead.
-
 Files:
 
-- `ryan.png` — seaborn grid (closure × metric, log scale, hatched = zstd)
-- `ryan.csv` — flat `(closure, metric, server, time_s, mibps)` table
-- `ryan.log` — raw `cargo bench` output
+- `ryan-time.png` — wall time per full closure pass; **directly comparable
+  across compression modes**, lower is better. Hatched bars = zstd.
+- `ryan-throughput.png` — socket MiB/s = bytes read off the TCP socket /
+  wall time. The client never decompresses, so for `*-zstd` this counts
+  compressed bytes; the chart splits none/zstd into two blocks for that
+  reason.
+- `ryan.csv` — flat `(closure, metric, server, time_s, mibps)` table.
+- `ryan.log` — raw `cargo bench` output.
 
 Re-render from a fresh `target/criterion`:
 
 ```sh
-python3 scripts/plot.py --out results/ryan.png --csv-out results/ryan.csv
+python3 scripts/plot.py --unit time       --out results/ryan-time.png --csv-out results/ryan.csv
+python3 scripts/plot.py --unit throughput --out results/ryan-throughput.png
 ```
