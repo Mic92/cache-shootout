@@ -27,7 +27,7 @@ HTML report: `target/criterion/report/index.html`.
 Seaborn wall-time chart + CSV:
 
 ```sh
-nix develop -c python3 scripts/plot.py --out results/ryan.png --csv-out results/ryan.csv
+nix develop -c python3 scripts/plot.py --out results/shootout.png --csv-out results/shootout.csv
 ```
 
 See `results/` for the committed run.

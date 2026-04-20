@@ -169,7 +169,7 @@ def _annotate_h(ax: plt.Axes, fmt: str) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--criterion-dir", type=Path, default=Path("target/criterion"))
-    ap.add_argument("--out", type=Path, default=Path("results/ryan.png"))
+    ap.add_argument("--out", type=Path, default=Path("results/shootout.png"))
     ap.add_argument(
         "--csv-out",
         type=Path,
