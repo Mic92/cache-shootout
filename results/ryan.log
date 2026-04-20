@@ -1,0 +1,866 @@
+warning: Git tree '/scratch/joerg/cache-shootout' is dirty
+copying path '/nix/store/qxvdfv929vy7p8pxbjsx1c27v9lg51sw-source' from 'https://cache.thalheim.io'...
+evaluation warning: passing in an `stdenv` override into `mkCargoDerivation` is now deprecated.
+                    Changing the default `stdenv` must be done at the `craneLib` level like so:
+
+                      craneLib' = craneLib.override (final: prev: {
+                        # Set this to the chosen stdenv, e.g. `p.clangStdenv`
+                        stdenvSelector = p: p.stdenv;
+                      })
+evaluation warning: passing in an `stdenv` override into `mkCargoDerivation` is now deprecated.
+                    Changing the default `stdenv` must be done at the `craneLib` level like so:
+
+                      craneLib' = craneLib.override (final: prev: {
+                        # Set this to the chosen stdenv, e.g. `p.clangStdenv`
+                        stdenvSelector = p: p.stdenv;
+                      })
+warning: Performing inefficient double copy of path '«github:aristanetworks/nix-serve-ng/f63998a6c81fab86e840dbab483d387dee5ffc0a?narHash=sha256-paUnCU08wDZ3bS0Fa4QhtjWMcpWgcTRwO/ee3wT28Nw%3D»/nix/store/fr4qn4dzssyi797nqziwichwlfpwmfdd-source' to the store. This can typically be avoided by rewriting an attribute like `src = ./.` to `src = builtins.path { path = ./.; name = "source"; }`.
+copying path '/nix/store/jgap7plhsvx2xnr81l9iv1ffqh4gfky8-harmonia-3.0.0' from 'https://cache.thalheim.io'...
+building '/nix/store/0vj0pkfbd3kxs3jpbjh89wr7gp5b966l-nix-shell-env.drv'...
+   Compiling cache-shootout v0.1.0 (/scratch/joerg/cache-shootout)
+    Finished `bench` profile [optimized] target(s) in 5.87s
+     Running benches/http_download.rs (target/release/deps/http_download-4339d4c6cffebf8e)
+Gnuplot not found, using plotters backend
+building closure 'firefox' from .#packages.x86_64-linux.closure-firefox ...
+closure 'firefox' built: /nix/store/hbrg37qp92fdadcfnishjw2h95y924dq-firefox-149.0.2
+building closure 'nixos-minimal' from .#packages.x86_64-linux.closure-nixos-minimal ...
+closure 'nixos-minimal' built: /nix/store/0zxi88qx4g50w9v4fjh47zhs9dbwz1x7-nixos-system-nixos-26.05.20260414.4bd9165
+closure 'firefox': 373 store paths
+== [firefox] starting harmonia-none ==
+[firefox] harmonia-none: 373 paths, 1541.04 MiB on the wire (warm)
+== [firefox] starting harmonia-zstd ==
+[firefox] harmonia-zstd: 373 paths, 524.21 MiB on the wire (warm)
+== [firefox] starting nix-serve ==
+[firefox] nix-serve: 373 paths, 1541.04 MiB on the wire (warm)
+== [firefox] starting nix-serve-ng ==
+[firefox] nix-serve-ng: 373 paths, 1541.04 MiB on the wire (warm)
+== [firefox] starting nix-serve-ng+nginx-zstd ==
+[firefox] nix-serve-ng+nginx-zstd: 373 paths, 534.08 MiB on the wire (warm)
+== [firefox] starting ncps-none ==
+[firefox] ncps-none: 373 paths, 1541.04 MiB on the wire (warm)
+== [firefox] starting ncps-zstd ==
+nginx: nix copy closure to file:///tmp/nix-shell.aKJwut/.tmpPKfvj1/cache?compression=zstd ...
+[firefox] ncps-zstd: 373 paths, 514.67 MiB on the wire (warm)
+== [firefox] starting nginx-none ==
+nginx: nix copy closure to file:///tmp/nix-shell.aKJwut/.tmp9MvUl4/cache?compression=none ...
+[firefox] nginx-none: 373 paths, 1541.04 MiB on the wire (warm)
+== [firefox] starting nginx-zstd ==
+nginx: nix copy closure to file:///tmp/nix-shell.aKJwut/.tmpf6vGkK/cache?compression=zstd ...
+[firefox] nginx-zstd: 373 paths, 514.67 MiB on the wire (warm)
+== [firefox] starting attic-none ==
+attic: pushing closure /nix/store/hbrg37qp92fdadcfnishjw2h95y924dq-firefox-149.0.2 ...
+[firefox] attic-none: 373 paths, 1541.04 MiB on the wire (warm)
+== [firefox] starting attic-zstd ==
+attic: pushing closure /nix/store/hbrg37qp92fdadcfnishjw2h95y924dq-firefox-149.0.2 ...
+[firefox] attic-zstd: 373 paths, 571.11 MiB on the wire (warm)
+closure 'nixos-minimal': 493 store paths
+== [nixos-minimal] starting harmonia-none ==
+[nixos-minimal] harmonia-none: 493 paths, 1032.99 MiB on the wire (warm)
+== [nixos-minimal] starting harmonia-zstd ==
+[nixos-minimal] harmonia-zstd: 493 paths, 428.43 MiB on the wire (warm)
+== [nixos-minimal] starting nix-serve ==
+[nixos-minimal] nix-serve: 493 paths, 1032.99 MiB on the wire (warm)
+== [nixos-minimal] starting nix-serve-ng ==
+[nixos-minimal] nix-serve-ng: 493 paths, 1032.99 MiB on the wire (warm)
+== [nixos-minimal] starting nix-serve-ng+nginx-zstd ==
+[nixos-minimal] nix-serve-ng+nginx-zstd: 493 paths, 455.82 MiB on the wire (warm)
+== [nixos-minimal] starting ncps-none ==
+[nixos-minimal] ncps-none: 493 paths, 1032.99 MiB on the wire (warm)
+== [nixos-minimal] starting ncps-zstd ==
+nginx: nix copy closure to file:///tmp/nix-shell.aKJwut/.tmpiYuh82/cache?compression=zstd ...
+[nixos-minimal] ncps-zstd: 493 paths, 418.46 MiB on the wire (warm)
+== [nixos-minimal] starting nginx-none ==
+nginx: nix copy closure to file:///tmp/nix-shell.aKJwut/.tmpP6hBDR/cache?compression=none ...
+[nixos-minimal] nginx-none: 493 paths, 1032.99 MiB on the wire (warm)
+== [nixos-minimal] starting nginx-zstd ==
+nginx: nix copy closure to file:///tmp/nix-shell.aKJwut/.tmpZxqPqo/cache?compression=zstd ...
+[nixos-minimal] nginx-zstd: 493 paths, 418.46 MiB on the wire (warm)
+== [nixos-minimal] starting attic-none ==
+attic: pushing closure /nix/store/0zxi88qx4g50w9v4fjh47zhs9dbwz1x7-nixos-system-nixos-26.05.20260414.4bd9165 ...
+[nixos-minimal] attic-none: 493 paths, 1032.99 MiB on the wire (warm)
+== [nixos-minimal] starting attic-zstd ==
+attic: pushing closure /nix/store/0zxi88qx4g50w9v4fjh47zhs9dbwz1x7-nixos-system-nixos-26.05.20260414.4bd9165 ...
+[nixos-minimal] attic-zstd: 493 paths, 452.47 MiB on the wire (warm)
+Benchmarking narinfo_all/firefox/harmonia-none
+Benchmarking narinfo_all/firefox/harmonia-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 5.0s. You may wish to increase target time to 8.4s or enable flat sampling.
+Benchmarking narinfo_all/firefox/harmonia-none: Collecting 10 samples in estimated 8.4131 s (55 iterations)
+Benchmarking narinfo_all/firefox/harmonia-none: Analyzing
+narinfo_all/firefox/harmonia-none
+                        time:   [144.76 ms 146.20 ms 147.20 ms]
+Found 2 outliers among 10 measurements (20.00%)
+  2 (20.00%) high mild
+Benchmarking narinfo_all/firefox/harmonia-zstd
+Benchmarking narinfo_all/firefox/harmonia-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 5.0s. You may wish to increase target time to 8.2s or enable flat sampling.
+Benchmarking narinfo_all/firefox/harmonia-zstd: Collecting 10 samples in estimated 8.1632 s (55 iterations)
+Benchmarking narinfo_all/firefox/harmonia-zstd: Analyzing
+narinfo_all/firefox/harmonia-zstd
+                        time:   [141.87 ms 143.01 ms 144.85 ms]
+Benchmarking narinfo_all/firefox/nix-serve
+Benchmarking narinfo_all/firefox/nix-serve: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 5.0s. You may wish to increase target time to 32.3s.
+Benchmarking narinfo_all/firefox/nix-serve: Collecting 10 samples in estimated 32.323 s (10 iterations)
+Benchmarking narinfo_all/firefox/nix-serve: Analyzing
+narinfo_all/firefox/nix-serve
+                        time:   [3.1987 s 3.2303 s 3.2557 s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) low mild
+Benchmarking narinfo_all/firefox/nix-serve-ng
+Benchmarking narinfo_all/firefox/nix-serve-ng: Warming up for 3.0000 s
+Benchmarking narinfo_all/firefox/nix-serve-ng: Collecting 10 samples in estimated 8.8639 s (110 iterations)
+Benchmarking narinfo_all/firefox/nix-serve-ng: Analyzing
+narinfo_all/firefox/nix-serve-ng
+                        time:   [78.508 ms 80.816 ms 83.621 ms]
+Benchmarking narinfo_all/firefox/nix-serve-ng+nginx-zstd
+Benchmarking narinfo_all/firefox/nix-serve-ng+nginx-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 5.0s. You may wish to increase target time to 8.6s or enable flat sampling.
+Benchmarking narinfo_all/firefox/nix-serve-ng+nginx-zstd: Collecting 10 samples in estimated 8.5921 s (55 iterations)
+Benchmarking narinfo_all/firefox/nix-serve-ng+nginx-zstd: Analyzing
+narinfo_all/firefox/nix-serve-ng+nginx-zstd
+                        time:   [152.72 ms 156.01 ms 160.17 ms]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) high mild
+Benchmarking narinfo_all/firefox/ncps-none
+Benchmarking narinfo_all/firefox/ncps-none: Warming up for 3.0000 s
+Benchmarking narinfo_all/firefox/ncps-none: Collecting 10 samples in estimated 5.8518 s (20 iterations)
+Benchmarking narinfo_all/firefox/ncps-none: Analyzing
+narinfo_all/firefox/ncps-none
+                        time:   [279.57 ms 282.54 ms 285.57 ms]
+Benchmarking narinfo_all/firefox/ncps-zstd
+Benchmarking narinfo_all/firefox/ncps-zstd: Warming up for 3.0000 s
+Benchmarking narinfo_all/firefox/ncps-zstd: Collecting 10 samples in estimated 6.1719 s (20 iterations)
+Benchmarking narinfo_all/firefox/ncps-zstd: Analyzing
+narinfo_all/firefox/ncps-zstd
+                        time:   [299.93 ms 301.26 ms 302.77 ms]
+Benchmarking narinfo_all/firefox/nginx-none
+Benchmarking narinfo_all/firefox/nginx-none: Warming up for 3.0000 s
+Benchmarking narinfo_all/firefox/nginx-none: Collecting 10 samples in estimated 7.2918 s (110 iterations)
+Benchmarking narinfo_all/firefox/nginx-none: Analyzing
+narinfo_all/firefox/nginx-none
+                        time:   [64.077 ms 65.069 ms 66.101 ms]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) low mild
+Benchmarking narinfo_all/firefox/nginx-zstd
+Benchmarking narinfo_all/firefox/nginx-zstd: Warming up for 3.0000 s
+Benchmarking narinfo_all/firefox/nginx-zstd: Collecting 10 samples in estimated 7.3117 s (110 iterations)
+Benchmarking narinfo_all/firefox/nginx-zstd: Analyzing
+narinfo_all/firefox/nginx-zstd
+                        time:   [63.091 ms 63.778 ms 65.173 ms]
+Benchmarking narinfo_all/firefox/attic-none
+Benchmarking narinfo_all/firefox/attic-none: Warming up for 3.0000 s
+Benchmarking narinfo_all/firefox/attic-none: Collecting 10 samples in estimated 6.1265 s (20 iterations)
+Benchmarking narinfo_all/firefox/attic-none: Analyzing
+narinfo_all/firefox/attic-none
+                        time:   [292.43 ms 297.05 ms 300.60 ms]
+Found 3 outliers among 10 measurements (30.00%)
+  2 (20.00%) low severe
+  1 (10.00%) high severe
+Benchmarking narinfo_all/firefox/attic-zstd
+Benchmarking narinfo_all/firefox/attic-zstd: Warming up for 3.0000 s
+Benchmarking narinfo_all/firefox/attic-zstd: Collecting 10 samples in estimated 5.8896 s (20 iterations)
+Benchmarking narinfo_all/firefox/attic-zstd: Analyzing
+narinfo_all/firefox/attic-zstd
+                        time:   [299.70 ms 301.46 ms 303.23 ms]
+
+Benchmarking narinfo_all/nixos-minimal/harmonia-none
+Benchmarking narinfo_all/nixos-minimal/harmonia-none: Warming up for 3.0000 s
+Benchmarking narinfo_all/nixos-minimal/harmonia-none: Collecting 10 samples in estimated 6.5477 s (30 iterations)
+Benchmarking narinfo_all/nixos-minimal/harmonia-none: Analyzing
+narinfo_all/nixos-minimal/harmonia-none
+                        time:   [193.72 ms 198.04 ms 203.47 ms]
+Found 2 outliers among 10 measurements (20.00%)
+  1 (10.00%) high mild
+  1 (10.00%) high severe
+Benchmarking narinfo_all/nixos-minimal/harmonia-zstd
+Benchmarking narinfo_all/nixos-minimal/harmonia-zstd: Warming up for 3.0000 s
+Benchmarking narinfo_all/nixos-minimal/harmonia-zstd: Collecting 10 samples in estimated 6.2142 s (30 iterations)
+Benchmarking narinfo_all/nixos-minimal/harmonia-zstd: Analyzing
+narinfo_all/nixos-minimal/harmonia-zstd
+                        time:   [192.59 ms 195.25 ms 197.89 ms]
+Benchmarking narinfo_all/nixos-minimal/nix-serve
+Benchmarking narinfo_all/nixos-minimal/nix-serve: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 5.0s. You may wish to increase target time to 42.7s.
+Benchmarking narinfo_all/nixos-minimal/nix-serve: Collecting 10 samples in estimated 42.745 s (10 iterations)
+Benchmarking narinfo_all/nixos-minimal/nix-serve: Analyzing
+narinfo_all/nixos-minimal/nix-serve
+                        time:   [4.2062 s 4.2346 s 4.2666 s]
+Benchmarking narinfo_all/nixos-minimal/nix-serve-ng
+Benchmarking narinfo_all/nixos-minimal/nix-serve-ng: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 5.0s. You may wish to increase target time to 6.5s or enable flat sampling.
+Benchmarking narinfo_all/nixos-minimal/nix-serve-ng: Collecting 10 samples in estimated 6.4653 s (55 iterations)
+Benchmarking narinfo_all/nixos-minimal/nix-serve-ng: Analyzing
+narinfo_all/nixos-minimal/nix-serve-ng
+                        time:   [114.58 ms 116.27 ms 117.79 ms]
+Benchmarking narinfo_all/nixos-minimal/nix-serve-ng+nginx-zstd
+Benchmarking narinfo_all/nixos-minimal/nix-serve-ng+nginx-zstd: Warming up for 3.0000 s
+Benchmarking narinfo_all/nixos-minimal/nix-serve-ng+nginx-zstd: Collecting 10 samples in estimated 6.8382 s (30 iterations)
+Benchmarking narinfo_all/nixos-minimal/nix-serve-ng+nginx-zstd: Analyzing
+narinfo_all/nixos-minimal/nix-serve-ng+nginx-zstd
+                        time:   [223.93 ms 229.63 ms 234.50 ms]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) low mild
+Benchmarking narinfo_all/nixos-minimal/ncps-none
+Benchmarking narinfo_all/nixos-minimal/ncps-none: Warming up for 3.0000 s
+Benchmarking narinfo_all/nixos-minimal/ncps-none: Collecting 10 samples in estimated 7.7271 s (20 iterations)
+Benchmarking narinfo_all/nixos-minimal/ncps-none: Analyzing
+narinfo_all/nixos-minimal/ncps-none
+                        time:   [360.13 ms 364.03 ms 368.03 ms]
+Benchmarking narinfo_all/nixos-minimal/ncps-zstd
+Benchmarking narinfo_all/nixos-minimal/ncps-zstd: Warming up for 3.0000 s
+Benchmarking narinfo_all/nixos-minimal/ncps-zstd: Collecting 10 samples in estimated 7.9921 s (20 iterations)
+Benchmarking narinfo_all/nixos-minimal/ncps-zstd: Analyzing
+narinfo_all/nixos-minimal/ncps-zstd
+                        time:   [394.50 ms 396.44 ms 398.31 ms]
+Benchmarking narinfo_all/nixos-minimal/nginx-none
+Benchmarking narinfo_all/nixos-minimal/nginx-none: Warming up for 3.0000 s
+Benchmarking narinfo_all/nixos-minimal/nginx-none: Collecting 10 samples in estimated 9.4181 s (110 iterations)
+Benchmarking narinfo_all/nixos-minimal/nginx-none: Analyzing
+narinfo_all/nixos-minimal/nginx-none
+                        time:   [85.178 ms 86.368 ms 87.347 ms]
+Benchmarking narinfo_all/nixos-minimal/nginx-zstd
+Benchmarking narinfo_all/nixos-minimal/nginx-zstd: Warming up for 3.0000 s
+Benchmarking narinfo_all/nixos-minimal/nginx-zstd: Collecting 10 samples in estimated 9.4773 s (110 iterations)
+Benchmarking narinfo_all/nixos-minimal/nginx-zstd: Analyzing
+narinfo_all/nixos-minimal/nginx-zstd
+                        time:   [85.807 ms 86.653 ms 87.492 ms]
+Benchmarking narinfo_all/nixos-minimal/attic-none
+Benchmarking narinfo_all/nixos-minimal/attic-none: Warming up for 3.0000 s
+Benchmarking narinfo_all/nixos-minimal/attic-none: Collecting 10 samples in estimated 8.0591 s (20 iterations)
+Benchmarking narinfo_all/nixos-minimal/attic-none: Analyzing
+narinfo_all/nixos-minimal/attic-none
+                        time:   [390.65 ms 397.96 ms 403.81 ms]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) low mild
+Benchmarking narinfo_all/nixos-minimal/attic-zstd
+Benchmarking narinfo_all/nixos-minimal/attic-zstd: Warming up for 3.0000 s
+Benchmarking narinfo_all/nixos-minimal/attic-zstd: Collecting 10 samples in estimated 7.7820 s (20 iterations)
+Benchmarking narinfo_all/nixos-minimal/attic-zstd: Analyzing
+narinfo_all/nixos-minimal/attic-zstd
+                        time:   [375.38 ms 380.00 ms 383.92 ms]
+Found 2 outliers among 10 measurements (20.00%)
+  2 (20.00%) low mild
+
+Benchmarking nar_download_c1/firefox/harmonia-none
+Benchmarking nar_download_c1/firefox/harmonia-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 27.1s.
+Benchmarking nar_download_c1/firefox/harmonia-none: Collecting 10 samples in estimated 27.104 s (10 iterations)
+Benchmarking nar_download_c1/firefox/harmonia-none: Analyzing
+nar_download_c1/firefox/harmonia-none
+                        time:   [2.6461 s 2.6913 s 2.7327 s]
+                        thrpt:  [563.92 MiB/s 572.61 MiB/s 582.39 MiB/s]
+Benchmarking nar_download_c1/firefox/harmonia-zstd
+Benchmarking nar_download_c1/firefox/harmonia-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 123.8s.
+Benchmarking nar_download_c1/firefox/harmonia-zstd: Collecting 10 samples in estimated 123.78 s (10 iterations)
+Benchmarking nar_download_c1/firefox/harmonia-zstd: Analyzing
+nar_download_c1/firefox/harmonia-zstd
+                        time:   [14.628 s 15.239 s 15.846 s]
+                        thrpt:  [33.081 MiB/s 34.398 MiB/s 35.836 MiB/s]
+Benchmarking nar_download_c1/firefox/nix-serve
+Benchmarking nar_download_c1/firefox/nix-serve: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 295.6s.
+Benchmarking nar_download_c1/firefox/nix-serve: Collecting 10 samples in estimated 295.58 s (10 iterations)
+Benchmarking nar_download_c1/firefox/nix-serve: Analyzing
+nar_download_c1/firefox/nix-serve
+                        time:   [29.758 s 29.841 s 29.921 s]
+                        thrpt:  [51.504 MiB/s 51.641 MiB/s 51.785 MiB/s]
+Benchmarking nar_download_c1/firefox/nix-serve-ng
+Benchmarking nar_download_c1/firefox/nix-serve-ng: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 318.5s.
+Benchmarking nar_download_c1/firefox/nix-serve-ng: Collecting 10 samples in estimated 318.50 s (10 iterations)
+Benchmarking nar_download_c1/firefox/nix-serve-ng: Analyzing
+nar_download_c1/firefox/nix-serve-ng
+                        time:   [30.937 s 31.508 s 32.132 s]
+                        thrpt:  [47.960 MiB/s 48.910 MiB/s 49.813 MiB/s]
+Benchmarking nar_download_c1/firefox/nix-serve-ng+nginx-zstd
+Benchmarking nar_download_c1/firefox/nix-serve-ng+nginx-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 331.2s.
+Benchmarking nar_download_c1/firefox/nix-serve-ng+nginx-zstd: Collecting 10 samples in estimated 331.24 s (10 iterations)
+Benchmarking nar_download_c1/firefox/nix-serve-ng+nginx-zstd: Analyzing
+nar_download_c1/firefox/nix-serve-ng+nginx-zstd
+                        time:   [33.402 s 33.510 s 33.614 s]
+                        thrpt:  [15.889 MiB/s 15.938 MiB/s 15.990 MiB/s]
+Benchmarking nar_download_c1/firefox/ncps-none
+Benchmarking nar_download_c1/firefox/ncps-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 74.5s.
+Benchmarking nar_download_c1/firefox/ncps-none: Collecting 10 samples in estimated 74.503 s (10 iterations)
+Benchmarking nar_download_c1/firefox/ncps-none: Analyzing
+nar_download_c1/firefox/ncps-none
+                        time:   [7.1863 s 7.3466 s 7.4862 s]
+                        thrpt:  [205.85 MiB/s 209.76 MiB/s 214.44 MiB/s]
+Benchmarking nar_download_c1/firefox/ncps-zstd
+Benchmarking nar_download_c1/firefox/ncps-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 12.5s.
+Benchmarking nar_download_c1/firefox/ncps-zstd: Collecting 10 samples in estimated 12.455 s (10 iterations)
+Benchmarking nar_download_c1/firefox/ncps-zstd: Analyzing
+nar_download_c1/firefox/ncps-zstd
+                        time:   [1.1569 s 1.1780 s 1.2006 s]
+                        thrpt:  [428.69 MiB/s 436.92 MiB/s 444.88 MiB/s]
+Benchmarking nar_download_c1/firefox/nginx-none
+Benchmarking nar_download_c1/firefox/nginx-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 11.9s.
+Benchmarking nar_download_c1/firefox/nginx-none: Collecting 10 samples in estimated 11.911 s (10 iterations)
+Benchmarking nar_download_c1/firefox/nginx-none: Analyzing
+nar_download_c1/firefox/nginx-none
+                        time:   [1.1973 s 1.2319 s 1.2640 s]
+                        thrpt:  [1.1906 GiB/s 1.2216 GiB/s 1.2570 GiB/s]
+Benchmarking nar_download_c1/firefox/nginx-zstd
+Benchmarking nar_download_c1/firefox/nginx-zstd: Warming up for 3.0000 s
+Benchmarking nar_download_c1/firefox/nginx-zstd: Collecting 10 samples in estimated 13.560 s (30 iterations)
+Benchmarking nar_download_c1/firefox/nginx-zstd: Analyzing
+nar_download_c1/firefox/nginx-zstd
+                        time:   [415.28 ms 429.71 ms 443.08 ms]
+                        thrpt:  [1.1343 GiB/s 1.1697 GiB/s 1.2103 GiB/s]
+Benchmarking nar_download_c1/firefox/attic-none
+Benchmarking nar_download_c1/firefox/attic-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 359.6s.
+Benchmarking nar_download_c1/firefox/attic-none: Collecting 10 samples in estimated 359.59 s (10 iterations)
+Benchmarking nar_download_c1/firefox/attic-none: Analyzing
+nar_download_c1/firefox/attic-none
+                        time:   [36.627 s 36.914 s 37.186 s]
+                        thrpt:  [41.442 MiB/s 41.747 MiB/s 42.073 MiB/s]
+Found 2 outliers among 10 measurements (20.00%)
+  1 (10.00%) low severe
+  1 (10.00%) high mild
+Benchmarking nar_download_c1/firefox/attic-zstd
+Benchmarking nar_download_c1/firefox/attic-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 251.8s.
+Benchmarking nar_download_c1/firefox/attic-zstd: Collecting 10 samples in estimated 251.84 s (10 iterations)
+Benchmarking nar_download_c1/firefox/attic-zstd: Analyzing
+nar_download_c1/firefox/attic-zstd
+                        time:   [24.982 s 25.126 s 25.264 s]
+                        thrpt:  [22.605 MiB/s 22.730 MiB/s 22.861 MiB/s]
+
+Benchmarking nar_download_c1/nixos-minimal/harmonia-none
+Benchmarking nar_download_c1/nixos-minimal/harmonia-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 52.9s.
+Benchmarking nar_download_c1/nixos-minimal/harmonia-none: Collecting 10 samples in estimated 52.926 s (10 iterations)
+Benchmarking nar_download_c1/nixos-minimal/harmonia-none: Analyzing
+nar_download_c1/nixos-minimal/harmonia-none
+                        time:   [5.0855 s 5.3392 s 5.6248 s]
+                        thrpt:  [183.65 MiB/s 193.47 MiB/s 203.12 MiB/s]
+Benchmarking nar_download_c1/nixos-minimal/harmonia-zstd
+Benchmarking nar_download_c1/nixos-minimal/harmonia-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 143.0s.
+Benchmarking nar_download_c1/nixos-minimal/harmonia-zstd: Collecting 10 samples in estimated 142.96 s (10 iterations)
+Benchmarking nar_download_c1/nixos-minimal/harmonia-zstd: Analyzing
+nar_download_c1/nixos-minimal/harmonia-zstd
+                        time:   [14.191 s 14.709 s 15.238 s]
+                        thrpt:  [28.116 MiB/s 29.126 MiB/s 30.190 MiB/s]
+Benchmarking nar_download_c1/nixos-minimal/nix-serve
+Benchmarking nar_download_c1/nixos-minimal/nix-serve: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 410.2s.
+Benchmarking nar_download_c1/nixos-minimal/nix-serve: Collecting 10 samples in estimated 410.18 s (10 iterations)
+Benchmarking nar_download_c1/nixos-minimal/nix-serve: Analyzing
+nar_download_c1/nixos-minimal/nix-serve
+                        time:   [41.223 s 41.377 s 41.527 s]
+                        thrpt:  [24.875 MiB/s 24.965 MiB/s 25.059 MiB/s]
+Benchmarking nar_download_c1/nixos-minimal/nix-serve-ng
+Benchmarking nar_download_c1/nixos-minimal/nix-serve-ng: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 1011.8s.
+Benchmarking nar_download_c1/nixos-minimal/nix-serve-ng: Collecting 10 samples in estimated 1011.8 s (10 iterations)
+Benchmarking nar_download_c1/nixos-minimal/nix-serve-ng: Analyzing
+nar_download_c1/nixos-minimal/nix-serve-ng
+                        time:   [101.59 s 102.41 s 103.25 s]
+                        thrpt:  [10.004 MiB/s 10.087 MiB/s 10.168 MiB/s]
+Benchmarking nar_download_c1/nixos-minimal/nix-serve-ng+nginx-zstd
+Benchmarking nar_download_c1/nixos-minimal/nix-serve-ng+nginx-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 636.1s.
+Benchmarking nar_download_c1/nixos-minimal/nix-serve-ng+nginx-zstd: Collecting 10 samples in estimated 636.11 s (10 iterations)
+Benchmarking nar_download_c1/nixos-minimal/nix-serve-ng+nginx-zstd: Analyzing
+nar_download_c1/nixos-minimal/nix-serve-ng+nginx-zstd
+                        time:   [63.008 s 63.508 s 63.972 s]
+                        thrpt:  [7.1253 MiB/s 7.1774 MiB/s 7.2344 MiB/s]
+Benchmarking nar_download_c1/nixos-minimal/ncps-none
+Benchmarking nar_download_c1/nixos-minimal/ncps-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 47.7s.
+Benchmarking nar_download_c1/nixos-minimal/ncps-none: Collecting 10 samples in estimated 47.692 s (10 iterations)
+Benchmarking nar_download_c1/nixos-minimal/ncps-none: Analyzing
+nar_download_c1/nixos-minimal/ncps-none
+                        time:   [4.6859 s 4.7634 s 4.8481 s]
+                        thrpt:  [213.07 MiB/s 216.86 MiB/s 220.44 MiB/s]
+Benchmarking nar_download_c1/nixos-minimal/ncps-zstd
+Benchmarking nar_download_c1/nixos-minimal/ncps-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 11.9s.
+Benchmarking nar_download_c1/nixos-minimal/ncps-zstd: Collecting 10 samples in estimated 11.883 s (10 iterations)
+Benchmarking nar_download_c1/nixos-minimal/ncps-zstd: Analyzing
+nar_download_c1/nixos-minimal/ncps-zstd
+                        time:   [1.1081 s 1.1313 s 1.1529 s]
+                        thrpt:  [362.97 MiB/s 369.91 MiB/s 377.62 MiB/s]
+Benchmarking nar_download_c1/nixos-minimal/nginx-none
+Benchmarking nar_download_c1/nixos-minimal/nginx-none: Warming up for 3.0000 s
+Benchmarking nar_download_c1/nixos-minimal/nginx-none: Collecting 10 samples in estimated 17.726 s (20 iterations)
+Benchmarking nar_download_c1/nixos-minimal/nginx-none: Analyzing
+nar_download_c1/nixos-minimal/nginx-none
+                        time:   [853.66 ms 871.23 ms 889.94 ms]
+                        thrpt:  [1.1335 GiB/s 1.1579 GiB/s 1.1817 GiB/s]
+Benchmarking nar_download_c1/nixos-minimal/nginx-zstd
+Benchmarking nar_download_c1/nixos-minimal/nginx-zstd: Warming up for 3.0000 s
+Benchmarking nar_download_c1/nixos-minimal/nginx-zstd: Collecting 10 samples in estimated 11.296 s (30 iterations)
+Benchmarking nar_download_c1/nixos-minimal/nginx-zstd: Analyzing
+nar_download_c1/nixos-minimal/nginx-zstd
+                        time:   [382.34 ms 390.07 ms 396.74 ms]
+                        thrpt:  [1.0300 GiB/s 1.0476 GiB/s 1.0688 GiB/s]
+Found 2 outliers among 10 measurements (20.00%)
+  2 (20.00%) low mild
+Benchmarking nar_download_c1/nixos-minimal/attic-none
+Benchmarking nar_download_c1/nixos-minimal/attic-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 353.4s.
+Benchmarking nar_download_c1/nixos-minimal/attic-none: Collecting 10 samples in estimated 353.35 s (10 iterations)
+Benchmarking nar_download_c1/nixos-minimal/attic-none: Analyzing
+nar_download_c1/nixos-minimal/attic-none
+                        time:   [34.634 s 34.888 s 35.122 s]
+                        thrpt:  [29.411 MiB/s 29.609 MiB/s 29.826 MiB/s]
+Benchmarking nar_download_c1/nixos-minimal/attic-zstd
+Benchmarking nar_download_c1/nixos-minimal/attic-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 278.7s.
+Benchmarking nar_download_c1/nixos-minimal/attic-zstd: Collecting 10 samples in estimated 278.72 s (10 iterations)
+Benchmarking nar_download_c1/nixos-minimal/attic-zstd: Analyzing
+nar_download_c1/nixos-minimal/attic-zstd
+                        time:   [27.407 s 27.546 s 27.688 s]
+                        thrpt:  [16.341 MiB/s 16.426 MiB/s 16.509 MiB/s]
+
+Benchmarking nar_download_c4/firefox/harmonia-none
+Benchmarking nar_download_c4/firefox/harmonia-none: Warming up for 3.0000 s
+Benchmarking nar_download_c4/firefox/harmonia-none: Collecting 10 samples in estimated 19.175 s (20 iterations)
+Benchmarking nar_download_c4/firefox/harmonia-none: Analyzing
+nar_download_c4/firefox/harmonia-none
+                        time:   [949.01 ms 954.48 ms 959.39 ms]
+                        thrpt:  [1.5686 GiB/s 1.5767 GiB/s 1.5858 GiB/s]
+Benchmarking nar_download_c4/firefox/harmonia-zstd
+Benchmarking nar_download_c4/firefox/harmonia-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 60.9s.
+Benchmarking nar_download_c4/firefox/harmonia-zstd: Collecting 10 samples in estimated 60.889 s (10 iterations)
+Benchmarking nar_download_c4/firefox/harmonia-zstd: Analyzing
+nar_download_c4/firefox/harmonia-zstd
+                        time:   [6.1977 s 6.4967 s 6.6965 s]
+                        thrpt:  [78.281 MiB/s 80.689 MiB/s 84.581 MiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) low severe
+Benchmarking nar_download_c4/firefox/nix-serve
+Benchmarking nar_download_c4/firefox/nix-serve: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 72.8s.
+Benchmarking nar_download_c4/firefox/nix-serve: Collecting 10 samples in estimated 72.762 s (10 iterations)
+Benchmarking nar_download_c4/firefox/nix-serve: Analyzing
+nar_download_c4/firefox/nix-serve
+                        time:   [7.2950 s 7.3060 s 7.3184 s]
+                        thrpt:  [210.57 MiB/s 210.93 MiB/s 211.25 MiB/s]
+Benchmarking nar_download_c4/firefox/nix-serve-ng
+Benchmarking nar_download_c4/firefox/nix-serve-ng: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 400.7s.
+Benchmarking nar_download_c4/firefox/nix-serve-ng: Collecting 10 samples in estimated 400.71 s (10 iterations)
+Benchmarking nar_download_c4/firefox/nix-serve-ng: Analyzing
+nar_download_c4/firefox/nix-serve-ng
+                        time:   [39.652 s 40.022 s 40.415 s]
+                        thrpt:  [38.130 MiB/s 38.505 MiB/s 38.865 MiB/s]
+Benchmarking nar_download_c4/firefox/nix-serve-ng+nginx-zstd
+Benchmarking nar_download_c4/firefox/nix-serve-ng+nginx-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 417.9s.
+Benchmarking nar_download_c4/firefox/nix-serve-ng+nginx-zstd: Collecting 10 samples in estimated 417.86 s (10 iterations)
+Benchmarking nar_download_c4/firefox/nix-serve-ng+nginx-zstd: Analyzing
+nar_download_c4/firefox/nix-serve-ng+nginx-zstd
+                        time:   [41.995 s 42.246 s 42.500 s]
+                        thrpt:  [12.567 MiB/s 12.642 MiB/s 12.718 MiB/s]
+Benchmarking nar_download_c4/firefox/ncps-none
+Benchmarking nar_download_c4/firefox/ncps-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 30.0s.
+Benchmarking nar_download_c4/firefox/ncps-none: Collecting 10 samples in estimated 30.022 s (10 iterations)
+Benchmarking nar_download_c4/firefox/ncps-none: Analyzing
+nar_download_c4/firefox/ncps-none
+                        time:   [2.9934 s 3.0326 s 3.0769 s]
+                        thrpt:  [500.84 MiB/s 508.15 MiB/s 514.81 MiB/s]
+Found 2 outliers among 10 measurements (20.00%)
+  2 (20.00%) high mild
+Benchmarking nar_download_c4/firefox/ncps-zstd
+Benchmarking nar_download_c4/firefox/ncps-zstd: Warming up for 3.0000 s
+Benchmarking nar_download_c4/firefox/ncps-zstd: Collecting 10 samples in estimated 13.170 s (30 iterations)
+Benchmarking nar_download_c4/firefox/ncps-zstd: Analyzing
+nar_download_c4/firefox/ncps-zstd
+                        time:   [436.97 ms 442.01 ms 446.69 ms]
+                        thrpt:  [1.1252 GiB/s 1.1371 GiB/s 1.1502 GiB/s]
+Benchmarking nar_download_c4/firefox/nginx-none
+Benchmarking nar_download_c4/firefox/nginx-none: Warming up for 3.0000 s
+Benchmarking nar_download_c4/firefox/nginx-none: Collecting 10 samples in estimated 13.771 s (20 iterations)
+Benchmarking nar_download_c4/firefox/nginx-none: Analyzing
+nar_download_c4/firefox/nginx-none
+                        time:   [552.19 ms 597.56 ms 651.30 ms]
+                        thrpt:  [2.3106 GiB/s 2.5185 GiB/s 2.7254 GiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) high mild
+Benchmarking nar_download_c4/firefox/nginx-zstd
+Benchmarking nar_download_c4/firefox/nginx-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 11.1s or enable flat sampling.
+Benchmarking nar_download_c4/firefox/nginx-zstd: Collecting 10 samples in estimated 11.136 s (55 iterations)
+Benchmarking nar_download_c4/firefox/nginx-zstd: Analyzing
+nar_download_c4/firefox/nginx-zstd
+                        time:   [198.05 ms 238.86 ms 293.88 ms]
+                        thrpt:  [1.7102 GiB/s 2.1042 GiB/s 2.5378 GiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) high severe
+Benchmarking nar_download_c4/firefox/attic-none
+Benchmarking nar_download_c4/firefox/attic-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 126.3s.
+Benchmarking nar_download_c4/firefox/attic-none: Collecting 10 samples in estimated 126.26 s (10 iterations)
+Benchmarking nar_download_c4/firefox/attic-none: Analyzing
+nar_download_c4/firefox/attic-none
+                        time:   [12.570 s 12.663 s 12.747 s]
+                        thrpt:  [120.90 MiB/s 121.69 MiB/s 122.60 MiB/s]
+Benchmarking nar_download_c4/firefox/attic-zstd
+Benchmarking nar_download_c4/firefox/attic-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 78.8s.
+Benchmarking nar_download_c4/firefox/attic-zstd: Collecting 10 samples in estimated 78.798 s (10 iterations)
+Benchmarking nar_download_c4/firefox/attic-zstd: Analyzing
+nar_download_c4/firefox/attic-zstd
+                        time:   [7.7931 s 7.8425 s 7.8937 s]
+                        thrpt:  [72.350 MiB/s 72.823 MiB/s 73.284 MiB/s]
+
+Benchmarking nar_download_c4/nixos-minimal/harmonia-none
+Benchmarking nar_download_c4/nixos-minimal/harmonia-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 31.4s.
+Benchmarking nar_download_c4/nixos-minimal/harmonia-none: Collecting 10 samples in estimated 31.421 s (10 iterations)
+Benchmarking nar_download_c4/nixos-minimal/harmonia-none: Analyzing
+nar_download_c4/nixos-minimal/harmonia-none
+                        time:   [3.0900 s 3.1925 s 3.3521 s]
+                        thrpt:  [308.16 MiB/s 323.57 MiB/s 334.30 MiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) high severe
+Benchmarking nar_download_c4/nixos-minimal/harmonia-zstd
+Benchmarking nar_download_c4/nixos-minimal/harmonia-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 69.0s.
+Benchmarking nar_download_c4/nixos-minimal/harmonia-zstd: Collecting 10 samples in estimated 68.957 s (10 iterations)
+Benchmarking nar_download_c4/nixos-minimal/harmonia-zstd: Analyzing
+nar_download_c4/nixos-minimal/harmonia-zstd
+                        time:   [6.8351 s 6.9401 s 7.0273 s]
+                        thrpt:  [60.966 MiB/s 61.732 MiB/s 62.680 MiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) low mild
+Benchmarking nar_download_c4/nixos-minimal/nix-serve
+Benchmarking nar_download_c4/nixos-minimal/nix-serve: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 102.7s.
+Benchmarking nar_download_c4/nixos-minimal/nix-serve: Collecting 10 samples in estimated 102.65 s (10 iterations)
+Benchmarking nar_download_c4/nixos-minimal/nix-serve: Analyzing
+nar_download_c4/nixos-minimal/nix-serve
+                        time:   [10.291 s 10.306 s 10.320 s]
+                        thrpt:  [100.10 MiB/s 100.23 MiB/s 100.38 MiB/s]
+Benchmarking nar_download_c4/nixos-minimal/nix-serve-ng
+Benchmarking nar_download_c4/nixos-minimal/nix-serve-ng: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 962.6s.
+Benchmarking nar_download_c4/nixos-minimal/nix-serve-ng: Collecting 10 samples in estimated 962.64 s (10 iterations)
+Benchmarking nar_download_c4/nixos-minimal/nix-serve-ng: Analyzing
+nar_download_c4/nixos-minimal/nix-serve-ng
+                        time:   [93.359 s 93.731 s 94.153 s]
+                        thrpt:  [10.971 MiB/s 11.021 MiB/s 11.065 MiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) high mild
+Benchmarking nar_download_c4/nixos-minimal/nix-serve-ng+nginx-zstd
+Benchmarking nar_download_c4/nixos-minimal/nix-serve-ng+nginx-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 905.1s.
+Benchmarking nar_download_c4/nixos-minimal/nix-serve-ng+nginx-zstd: Collecting 10 samples in estimated 905.11 s (10 iterations)
+Benchmarking nar_download_c4/nixos-minimal/nix-serve-ng+nginx-zstd: Analyzing
+nar_download_c4/nixos-minimal/nix-serve-ng+nginx-zstd
+                        time:   [89.976 s 90.436 s 90.822 s]
+                        thrpt:  [5.0189 MiB/s 5.0403 MiB/s 5.0661 MiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) low mild
+Benchmarking nar_download_c4/nixos-minimal/ncps-none
+Benchmarking nar_download_c4/nixos-minimal/ncps-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 14.2s.
+Benchmarking nar_download_c4/nixos-minimal/ncps-none: Collecting 10 samples in estimated 14.162 s (10 iterations)
+Benchmarking nar_download_c4/nixos-minimal/ncps-none: Analyzing
+nar_download_c4/nixos-minimal/ncps-none
+                        time:   [1.3821 s 1.4131 s 1.4451 s]
+                        thrpt:  [714.83 MiB/s 731.02 MiB/s 747.43 MiB/s]
+Benchmarking nar_download_c4/nixos-minimal/ncps-zstd
+Benchmarking nar_download_c4/nixos-minimal/ncps-zstd: Warming up for 3.0000 s
+Benchmarking nar_download_c4/nixos-minimal/ncps-zstd: Collecting 10 samples in estimated 13.726 s (30 iterations)
+Benchmarking nar_download_c4/nixos-minimal/ncps-zstd: Analyzing
+nar_download_c4/nixos-minimal/ncps-zstd
+                        time:   [442.66 ms 446.08 ms 449.11 ms]
+                        thrpt:  [931.75 MiB/s 938.09 MiB/s 945.34 MiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) low mild
+Benchmarking nar_download_c4/nixos-minimal/nginx-none
+Benchmarking nar_download_c4/nixos-minimal/nginx-none: Warming up for 3.0000 s
+Benchmarking nar_download_c4/nixos-minimal/nginx-none: Collecting 10 samples in estimated 13.144 s (30 iterations)
+Benchmarking nar_download_c4/nixos-minimal/nginx-none: Analyzing
+nar_download_c4/nixos-minimal/nginx-none
+                        time:   [423.23 ms 443.67 ms 462.92 ms]
+                        thrpt:  [2.1791 GiB/s 2.2737 GiB/s 2.3835 GiB/s]
+Benchmarking nar_download_c4/nixos-minimal/nginx-zstd
+Benchmarking nar_download_c4/nixos-minimal/nginx-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 11.3s or enable flat sampling.
+Benchmarking nar_download_c4/nixos-minimal/nginx-zstd: Collecting 10 samples in estimated 11.328 s (55 iterations)
+Benchmarking nar_download_c4/nixos-minimal/nginx-zstd: Analyzing
+nar_download_c4/nixos-minimal/nginx-zstd
+                        time:   [193.30 ms 209.47 ms 226.79 ms]
+                        thrpt:  [1.8019 GiB/s 1.9509 GiB/s 2.1141 GiB/s]
+Benchmarking nar_download_c4/nixos-minimal/attic-none
+Benchmarking nar_download_c4/nixos-minimal/attic-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 99.2s.
+Benchmarking nar_download_c4/nixos-minimal/attic-none: Collecting 10 samples in estimated 99.177 s (10 iterations)
+Benchmarking nar_download_c4/nixos-minimal/attic-none: Analyzing
+nar_download_c4/nixos-minimal/attic-none
+                        time:   [9.8285 s 9.8724 s 9.9130 s]
+                        thrpt:  [104.21 MiB/s 104.63 MiB/s 105.10 MiB/s]
+Found 2 outliers among 10 measurements (20.00%)
+  1 (10.00%) low mild
+  1 (10.00%) high mild
+Benchmarking nar_download_c4/nixos-minimal/attic-zstd
+Benchmarking nar_download_c4/nixos-minimal/attic-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 81.0s.
+Benchmarking nar_download_c4/nixos-minimal/attic-zstd: Collecting 10 samples in estimated 80.983 s (10 iterations)
+Benchmarking nar_download_c4/nixos-minimal/attic-zstd: Analyzing
+nar_download_c4/nixos-minimal/attic-zstd
+                        time:   [8.1807 s 8.2150 s 8.2497 s]
+                        thrpt:  [54.846 MiB/s 55.078 MiB/s 55.309 MiB/s]
+
+Benchmarking nar_download_c16/firefox/harmonia-none
+Benchmarking nar_download_c16/firefox/harmonia-none: Warming up for 3.0000 s
+Benchmarking nar_download_c16/firefox/harmonia-none: Collecting 10 samples in estimated 11.993 s (20 iterations)
+Benchmarking nar_download_c16/firefox/harmonia-none: Analyzing
+nar_download_c16/firefox/harmonia-none
+                        time:   [547.26 ms 573.46 ms 598.43 ms]
+                        thrpt:  [2.5148 GiB/s 2.6243 GiB/s 2.7499 GiB/s]
+Benchmarking nar_download_c16/firefox/harmonia-zstd
+Benchmarking nar_download_c16/firefox/harmonia-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 43.4s.
+Benchmarking nar_download_c16/firefox/harmonia-zstd: Collecting 10 samples in estimated 43.390 s (10 iterations)
+Benchmarking nar_download_c16/firefox/harmonia-zstd: Analyzing
+nar_download_c16/firefox/harmonia-zstd
+                        time:   [4.3186 s 4.3751 s 4.4249 s]
+                        thrpt:  [118.47 MiB/s 119.82 MiB/s 121.39 MiB/s]
+Benchmarking nar_download_c16/firefox/nix-serve
+Benchmarking nar_download_c16/firefox/nix-serve: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 50.1s.
+Benchmarking nar_download_c16/firefox/nix-serve: Collecting 10 samples in estimated 50.059 s (10 iterations)
+Benchmarking nar_download_c16/firefox/nix-serve: Analyzing
+nar_download_c16/firefox/nix-serve
+                        time:   [4.9831 s 4.9992 s 5.0161 s]
+                        thrpt:  [307.22 MiB/s 308.26 MiB/s 309.25 MiB/s]
+Benchmarking nar_download_c16/firefox/nix-serve-ng
+Benchmarking nar_download_c16/firefox/nix-serve-ng: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 413.0s.
+Benchmarking nar_download_c16/firefox/nix-serve-ng: Collecting 10 samples in estimated 413.02 s (10 iterations)
+Benchmarking nar_download_c16/firefox/nix-serve-ng: Analyzing
+nar_download_c16/firefox/nix-serve-ng
+                        time:   [41.914 s 42.166 s 42.414 s]
+                        thrpt:  [36.333 MiB/s 36.547 MiB/s 36.767 MiB/s]
+Benchmarking nar_download_c16/firefox/nix-serve-ng+nginx-zstd
+Benchmarking nar_download_c16/firefox/nix-serve-ng+nginx-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 422.0s.
+Benchmarking nar_download_c16/firefox/nix-serve-ng+nginx-zstd: Collecting 10 samples in estimated 421.96 s (10 iterations)
+Benchmarking nar_download_c16/firefox/nix-serve-ng+nginx-zstd: Analyzing
+nar_download_c16/firefox/nix-serve-ng+nginx-zstd
+                        time:   [42.032 s 42.174 s 42.326 s]
+                        thrpt:  [12.618 MiB/s 12.664 MiB/s 12.706 MiB/s]
+Benchmarking nar_download_c16/firefox/ncps-none
+Benchmarking nar_download_c16/firefox/ncps-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 19.2s.
+Benchmarking nar_download_c16/firefox/ncps-none: Collecting 10 samples in estimated 19.188 s (10 iterations)
+Benchmarking nar_download_c16/firefox/ncps-none: Analyzing
+nar_download_c16/firefox/ncps-none
+                        time:   [1.8490 s 1.8939 s 1.9296 s]
+                        thrpt:  [798.65 MiB/s 813.70 MiB/s 833.46 MiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) low severe
+Benchmarking nar_download_c16/firefox/ncps-zstd
+Benchmarking nar_download_c16/firefox/ncps-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 17.3s or enable flat sampling.
+Benchmarking nar_download_c16/firefox/ncps-zstd: Collecting 10 samples in estimated 17.329 s (55 iterations)
+Benchmarking nar_download_c16/firefox/ncps-zstd: Analyzing
+nar_download_c16/firefox/ncps-zstd
+                        time:   [309.03 ms 311.56 ms 313.12 ms]
+                        thrpt:  [1.6052 GiB/s 1.6132 GiB/s 1.6264 GiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) low mild
+Benchmarking nar_download_c16/firefox/nginx-none
+Benchmarking nar_download_c16/firefox/nginx-none: Warming up for 3.0000 s
+Benchmarking nar_download_c16/firefox/nginx-none: Collecting 10 samples in estimated 12.561 s (30 iterations)
+Benchmarking nar_download_c16/firefox/nginx-none: Analyzing
+nar_download_c16/firefox/nginx-none
+                        time:   [416.17 ms 435.91 ms 455.78 ms]
+                        thrpt:  [3.3018 GiB/s 3.4524 GiB/s 3.6161 GiB/s]
+Benchmarking nar_download_c16/firefox/nginx-zstd
+Benchmarking nar_download_c16/firefox/nginx-zstd: Warming up for 3.0000 s
+Benchmarking nar_download_c16/firefox/nginx-zstd: Collecting 10 samples in estimated 14.933 s (110 iterations)
+Benchmarking nar_download_c16/firefox/nginx-zstd: Analyzing
+nar_download_c16/firefox/nginx-zstd
+                        time:   [135.06 ms 139.39 ms 143.78 ms]
+                        thrpt:  [3.4958 GiB/s 3.6057 GiB/s 3.7215 GiB/s]
+Found 2 outliers among 10 measurements (20.00%)
+  1 (10.00%) high mild
+  1 (10.00%) high severe
+Benchmarking nar_download_c16/firefox/attic-none
+Benchmarking nar_download_c16/firefox/attic-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 73.8s.
+Benchmarking nar_download_c16/firefox/attic-none: Collecting 10 samples in estimated 73.763 s (10 iterations)
+Benchmarking nar_download_c16/firefox/attic-none: Analyzing
+nar_download_c16/firefox/attic-none
+                        time:   [7.1863 s 7.3582 s 7.4641 s]
+                        thrpt:  [206.46 MiB/s 209.43 MiB/s 214.44 MiB/s]
+Found 2 outliers among 10 measurements (20.00%)
+  1 (10.00%) low severe
+  1 (10.00%) low mild
+Benchmarking nar_download_c16/firefox/attic-zstd
+Benchmarking nar_download_c16/firefox/attic-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 41.4s.
+Benchmarking nar_download_c16/firefox/attic-zstd: Collecting 10 samples in estimated 41.361 s (10 iterations)
+Benchmarking nar_download_c16/firefox/attic-zstd: Analyzing
+nar_download_c16/firefox/attic-zstd
+                        time:   [4.1243 s 4.1496 s 4.1802 s]
+                        thrpt:  [136.62 MiB/s 137.63 MiB/s 138.48 MiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) high mild
+
+Benchmarking nar_download_c16/nixos-minimal/harmonia-none
+Benchmarking nar_download_c16/nixos-minimal/harmonia-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 42.3s.
+Benchmarking nar_download_c16/nixos-minimal/harmonia-none: Collecting 10 samples in estimated 42.255 s (10 iterations)
+Benchmarking nar_download_c16/nixos-minimal/harmonia-none: Analyzing
+nar_download_c16/nixos-minimal/harmonia-none
+                        time:   [4.1815 s 4.1922 s 4.2061 s]
+                        thrpt:  [245.59 MiB/s 246.41 MiB/s 247.04 MiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) high mild
+Benchmarking nar_download_c16/nixos-minimal/harmonia-zstd
+Benchmarking nar_download_c16/nixos-minimal/harmonia-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 68.2s.
+Benchmarking nar_download_c16/nixos-minimal/harmonia-zstd: Collecting 10 samples in estimated 68.209 s (10 iterations)
+Benchmarking nar_download_c16/nixos-minimal/harmonia-zstd: Analyzing
+nar_download_c16/nixos-minimal/harmonia-zstd
+                        time:   [6.7363 s 6.8250 s 6.9088 s]
+                        thrpt:  [62.012 MiB/s 62.773 MiB/s 63.600 MiB/s]
+Benchmarking nar_download_c16/nixos-minimal/nix-serve
+Benchmarking nar_download_c16/nixos-minimal/nix-serve: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 95.6s.
+Benchmarking nar_download_c16/nixos-minimal/nix-serve: Collecting 10 samples in estimated 95.563 s (10 iterations)
+Benchmarking nar_download_c16/nixos-minimal/nix-serve: Analyzing
+nar_download_c16/nixos-minimal/nix-serve
+                        time:   [8.0932 s 8.9908 s 9.6342 s]
+                        thrpt:  [107.22 MiB/s 114.89 MiB/s 127.64 MiB/s]
+Found 3 outliers among 10 measurements (30.00%)
+  2 (20.00%) low severe
+  1 (10.00%) high severe
+Benchmarking nar_download_c16/nixos-minimal/nix-serve-ng
+Benchmarking nar_download_c16/nixos-minimal/nix-serve-ng: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 936.6s.
+Benchmarking nar_download_c16/nixos-minimal/nix-serve-ng: Collecting 10 samples in estimated 936.60 s (10 iterations)
+Benchmarking nar_download_c16/nixos-minimal/nix-serve-ng: Analyzing
+nar_download_c16/nixos-minimal/nix-serve-ng
+                        time:   [91.946 s 92.671 s 93.378 s]
+                        thrpt:  [11.062 MiB/s 11.147 MiB/s 11.235 MiB/s]
+Benchmarking nar_download_c16/nixos-minimal/nix-serve-ng+nginx-zstd
+Benchmarking nar_download_c16/nixos-minimal/nix-serve-ng+nginx-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 897.9s.
+Benchmarking nar_download_c16/nixos-minimal/nix-serve-ng+nginx-zstd: Collecting 10 samples in estimated 897.92 s (10 iterations)
+Benchmarking nar_download_c16/nixos-minimal/nix-serve-ng+nginx-zstd: Analyzing
+nar_download_c16/nixos-minimal/nix-serve-ng+nginx-zstd
+                        time:   [89.402 s 89.687 s 89.968 s]
+                        thrpt:  [5.0665 MiB/s 5.0824 MiB/s 5.0986 MiB/s]
+Benchmarking nar_download_c16/nixos-minimal/ncps-none
+Benchmarking nar_download_c16/nixos-minimal/ncps-none: Warming up for 3.0000 s
+Benchmarking nar_download_c16/nixos-minimal/ncps-none: Collecting 10 samples in estimated 15.709 s (20 iterations)
+Benchmarking nar_download_c16/nixos-minimal/ncps-none: Analyzing
+nar_download_c16/nixos-minimal/ncps-none
+                        time:   [767.49 ms 790.16 ms 810.99 ms]
+                        thrpt:  [1.2439 GiB/s 1.2767 GiB/s 1.3144 GiB/s]
+Benchmarking nar_download_c16/nixos-minimal/ncps-zstd
+Benchmarking nar_download_c16/nixos-minimal/ncps-zstd: Warming up for 3.0000 s
+Benchmarking nar_download_c16/nixos-minimal/ncps-zstd: Collecting 10 samples in estimated 10.910 s (30 iterations)
+Benchmarking nar_download_c16/nixos-minimal/ncps-zstd: Analyzing
+nar_download_c16/nixos-minimal/ncps-zstd
+                        time:   [355.46 ms 359.16 ms 362.49 ms]
+                        thrpt:  [1.1273 GiB/s 1.1378 GiB/s 1.1496 GiB/s]
+Benchmarking nar_download_c16/nixos-minimal/nginx-none
+Benchmarking nar_download_c16/nixos-minimal/nginx-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 13.1s or enable flat sampling.
+Benchmarking nar_download_c16/nixos-minimal/nginx-none: Collecting 10 samples in estimated 13.075 s (55 iterations)
+Benchmarking nar_download_c16/nixos-minimal/nginx-none: Analyzing
+nar_download_c16/nixos-minimal/nginx-none
+                        time:   [189.21 ms 200.19 ms 217.95 ms]
+                        thrpt:  [4.6285 GiB/s 5.0390 GiB/s 5.3314 GiB/s]
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) high mild
+Benchmarking nar_download_c16/nixos-minimal/nginx-zstd
+Benchmarking nar_download_c16/nixos-minimal/nginx-zstd: Warming up for 3.0000 s
+Benchmarking nar_download_c16/nixos-minimal/nginx-zstd: Collecting 10 samples in estimated 13.790 s (110 iterations)
+Benchmarking nar_download_c16/nixos-minimal/nginx-zstd: Analyzing
+nar_download_c16/nixos-minimal/nginx-zstd
+                        time:   [128.71 ms 130.55 ms 132.90 ms]
+                        thrpt:  [3.0748 GiB/s 3.1302 GiB/s 3.1750 GiB/s]
+Benchmarking nar_download_c16/nixos-minimal/attic-none
+Benchmarking nar_download_c16/nixos-minimal/attic-none: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 42.3s.
+Benchmarking nar_download_c16/nixos-minimal/attic-none: Collecting 10 samples in estimated 42.286 s (10 iterations)
+Benchmarking nar_download_c16/nixos-minimal/attic-none: Analyzing
+nar_download_c16/nixos-minimal/attic-none
+                        time:   [4.2542 s 4.2656 s 4.2777 s]
+                        thrpt:  [241.48 MiB/s 242.17 MiB/s 242.82 MiB/s]
+Benchmarking nar_download_c16/nixos-minimal/attic-zstd
+Benchmarking nar_download_c16/nixos-minimal/attic-zstd: Warming up for 3.0000 s
+
+Warning: Unable to complete 10 samples in 10.0s. You may wish to increase target time to 37.8s.
+Benchmarking nar_download_c16/nixos-minimal/attic-zstd: Collecting 10 samples in estimated 37.817 s (10 iterations)
+Benchmarking nar_download_c16/nixos-minimal/attic-zstd: Analyzing
+nar_download_c16/nixos-minimal/attic-zstd
+                        time:   [3.7489 s 3.7670 s 3.7863 s]
+                        thrpt:  [119.50 MiB/s 120.11 MiB/s 120.69 MiB/s]
+

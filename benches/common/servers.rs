@@ -33,16 +33,19 @@ impl Compression {
 
 #[derive(Clone, Copy)]
 pub enum Server {
-    Harmonia,
+    /// `Zstd` exercises harmonia's actix `Compress` middleware: same NAR
+    /// stream, transfer-encoded on the fly when the client asks for it.
+    Harmonia(Compression),
     NixServe,
     NixServeNg,
     /// nix-serve-ng behind an nginx reverse proxy that zstd-encodes the
     /// response on the fly. Models the common "dumb cache + compressing edge"
     /// deployment without touching the cache server itself.
     NixServeNgNginxZstd,
-    /// ncps proxying a local harmonia upstream; benchmarked after a warm-up
-    /// pass so we measure ncps' own serving path, not the upstream fetch.
-    Ncps,
+    /// ncps proxying a local upstream, benchmarked warm so we measure ncps'
+    /// own serving path. `Zstd` uses a zstd flat-file upstream so ncps caches
+    /// and re-serves `.nar.zst` instead of raw `.nar`.
+    Ncps(Compression),
     /// nginx serving a `nix copy --to file://...` flat-file cache. This is the
     /// "just serve bytes off disk" baseline the dynamic servers are up against.
     Nginx(Compression),
@@ -53,15 +56,14 @@ pub enum Server {
 
 impl Server {
     pub fn all() -> &'static [Server] {
-        // Dynamic servers stream the store and have no NAR-level compression
-        // knob, so they appear once. nginx/attic persist NARs on disk and are
-        // run with both `none` and `zstd` so the wire-size trade-off shows up.
         &[
-            Server::Harmonia,
+            Server::Harmonia(Compression::None),
+            Server::Harmonia(Compression::Zstd),
             Server::NixServe,
             Server::NixServeNg,
             Server::NixServeNgNginxZstd,
-            Server::Ncps,
+            Server::Ncps(Compression::None),
+            Server::Ncps(Compression::Zstd),
             Server::Nginx(Compression::None),
             Server::Nginx(Compression::Zstd),
             Server::Attic(Compression::None),
@@ -71,11 +73,13 @@ impl Server {
 
     pub fn name(self) -> &'static str {
         match self {
-            Server::Harmonia => "harmonia",
+            Server::Harmonia(Compression::None) => "harmonia-none",
+            Server::Harmonia(Compression::Zstd) => "harmonia-zstd",
             Server::NixServe => "nix-serve",
             Server::NixServeNg => "nix-serve-ng",
             Server::NixServeNgNginxZstd => "nix-serve-ng+nginx-zstd",
-            Server::Ncps => "ncps",
+            Server::Ncps(Compression::None) => "ncps-none",
+            Server::Ncps(Compression::Zstd) => "ncps-zstd",
             Server::Nginx(Compression::None) => "nginx-none",
             Server::Nginx(Compression::Zstd) => "nginx-zstd",
             Server::Attic(Compression::None) => "attic-none",
@@ -85,11 +89,11 @@ impl Server {
 
     pub async fn start(self, client: &reqwest::Client, closure_root: &str) -> RunningCache {
         match self {
-            Server::Harmonia => start_harmonia(client).await,
+            Server::Harmonia(c) => start_harmonia(client, c).await,
             Server::NixServe => start_nix_serve(client).await,
             Server::NixServeNg => start_nix_serve_ng(client).await,
             Server::NixServeNgNginxZstd => start_nix_serve_ng_nginx_zstd(client).await,
-            Server::Ncps => start_ncps(client).await,
+            Server::Ncps(c) => start_ncps(client, closure_root, c).await,
             Server::Nginx(c) => start_nginx(client, closure_root, c).await,
             Server::Attic(c) => start_attic(client, closure_root, c).await,
         }
@@ -106,10 +110,23 @@ fn spawn(mut cmd: Command, what: &str) -> ProcessGuard {
     ProcessGuard::new(child)
 }
 
-async fn start_harmonia(client: &reqwest::Client) -> RunningCache {
+async fn start_harmonia(client: &reqwest::Client, comp: Compression) -> RunningCache {
     let port = pick_unused_port();
     let mut cfg = NamedTempFile::new().unwrap();
-    writeln!(cfg, "bind = \"127.0.0.1:{port}\"\npriority = 30").unwrap();
+    // PR #984 replaced actix `Compress` with a tuned zstd middleware whose
+    // parameters live under `[zstd]`; older harmonia ignores unknown keys, so
+    // this config works against both before and after the bump.
+    write!(
+        cfg,
+        "bind = \"127.0.0.1:{port}\"\n\
+         priority = 30\n\
+         enable_compression = true\n\
+         [zstd]\n\
+         level = 1\n\
+         long_distance_matching = true\n\
+         window_log = 25\n"
+    )
+    .unwrap();
     cfg.flush().unwrap();
 
     let mut cmd = Command::new(bin("HARMONIA_BIN", "harmonia-cache"));
@@ -123,9 +140,15 @@ async fn start_harmonia(client: &reqwest::Client) -> RunningCache {
     wait_for_cache_info(client, &base, Duration::from_secs(30)).await;
 
     RunningCache {
-        name: "harmonia",
+        name: Server::Harmonia(comp).name(),
         base_url: base,
-        accept_encoding: None,
+        // harmonia compresses via HTTP content-encoding negotiation, not in
+        // the narinfo URL; the only difference between variants is what the
+        // client asks for.
+        accept_encoding: match comp {
+            Compression::None => None,
+            Compression::Zstd => Some("zstd"),
+        },
         _guards: vec![guard],
     }
 }
@@ -251,10 +274,19 @@ http {{
     }
 }
 
-async fn start_ncps(client: &reqwest::Client) -> RunningCache {
-    // ncps is a pull-through proxy, so it needs an upstream. Use harmonia for
-    // that role since it serves the local store with no extra setup.
-    let upstream = start_harmonia(client).await;
+async fn start_ncps(
+    client: &reqwest::Client,
+    closure_root: &str,
+    comp: Compression,
+) -> RunningCache {
+    // ncps is a pull-through proxy and stores whatever bytes the upstream
+    // hands it. For the uncompressed variant harmonia is the cheapest local
+    // store server; for zstd we point it at a pre-compressed flat-file cache
+    // so ncps persists and re-serves `.nar.zst`.
+    let upstream = match comp {
+        Compression::None => start_harmonia(client, Compression::None).await,
+        Compression::Zstd => start_nginx(client, closure_root, Compression::Zstd).await,
+    };
 
     let port = pick_unused_port();
     let dir = TempDir::new().unwrap();
@@ -299,7 +331,7 @@ async fn start_ncps(client: &reqwest::Client) -> RunningCache {
     let mut guards = upstream._guards;
     guards.push(guard);
     RunningCache {
-        name: "ncps",
+        name: Server::Ncps(comp).name(),
         base_url: base,
         accept_encoding: None,
         _guards: guards,
@@ -516,7 +548,15 @@ interval = "0 hours"
 
     eprintln!("attic: pushing closure {closure_root} ...");
     let mut c = Command::new(&attic);
-    c.args(["push", "bench:bench", closure_root]);
+    // The bench closure is fetched from cache.nixos.org, whose key is the
+    // cache's default upstream filter; without this flag the entire push
+    // would be skipped and every narinfo would 404.
+    c.args([
+        "push",
+        "--ignore-upstream-cache-filter",
+        "bench:bench",
+        closure_root,
+    ]);
     attic_env(&mut c);
     run(&mut c, "attic push");
 

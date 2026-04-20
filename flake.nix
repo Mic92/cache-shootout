@@ -52,7 +52,12 @@
                   { modulesPath, lib, ... }:
                   {
                     imports = [ "${modulesPath}/profiles/minimal.nix" ];
-                    fileSystems."/".device = "nodev";
+                    # Dummy rootfs so toplevel evaluates while still pulling in
+                    # kernel + initrd; we want those in the benchmark closure.
+                    fileSystems."/" = {
+                      device = "/dev/disk/by-label/nixos";
+                      fsType = "ext4";
+                    };
                     boot.loader.grub.enable = false;
                     system.stateVersion = lib.trivial.release;
                     nixpkgs.hostPlatform = system;
