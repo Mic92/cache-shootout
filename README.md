@@ -1,5 +1,7 @@
 # cache-shootout
 
+![Nix binary cache shootout](results/shootout.png)
+
 Criterion benchmark comparing Nix binary cache servers over raw HTTP
 (narinfo + NAR download, sequential and concurrent).
 

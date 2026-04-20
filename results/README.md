@@ -1,5 +1,7 @@
 # Results
 
+![Nix binary cache shootout](shootout.png)
+
 Measured on an AMD EPYC 7713P (64 cores), 991 GiB RAM, NixOS. All servers
 and the benchmark client run on the same machine over loopback.
 
