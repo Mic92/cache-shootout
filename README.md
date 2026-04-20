@@ -24,12 +24,13 @@ nix develop -c cargo bench
 
 HTML report: `target/criterion/report/index.html`.
 
-Side-by-side seaborn chart:
+Seaborn wall-time chart + CSV:
 
 ```sh
-nix develop -c python3 scripts/plot.py
-# -> target/plots/shootout.png
+nix develop -c python3 scripts/plot.py --out results/ryan.png --csv-out results/ryan.csv
 ```
+
+See `results/` for the committed run.
 
 ## Knobs
 
