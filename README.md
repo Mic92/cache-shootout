@@ -69,7 +69,8 @@ Seaborn wall-time chart + CSV:
 nix develop -c python3 scripts/plot.py --out results/shootout.png --csv-out results/shootout.csv
 ```
 
-See `results/` for the committed run.
+See [`results/`](results/README.md) for the committed run and machine
+details.
 
 ## Knobs
 

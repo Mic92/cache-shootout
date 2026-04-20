@@ -2,8 +2,22 @@
 
 ![Nix binary cache shootout](shootout.png)
 
-Measured on an AMD EPYC 7713P (64 cores), 991 GiB RAM, NixOS. All servers
-and the benchmark client run on the same machine over loopback.
+## Machine
+
+| | |
+|---|---|
+| CPU | AMD EPYC 7713P, 64 cores / 128 threads |
+| RAM | 991 GiB |
+| OS | NixOS 25.11 (Xantusia), Linux 6.8.0 |
+| Nix | 2.30.0pre |
+| Storage | ZFS `zroot` on Dell Ent NVMe AGN MU AIC 1.6 TB |
+| `/nix/store`, `/scratch`, `/tmp` | all on the same ZFS pool (no tmpfs) |
+
+All servers and the benchmark client run on this machine over loopback. The
+closure is hot in ARC/page cache after the warm-up pass, so results reflect
+CPU and software overhead rather than disk bandwidth.
+
+## Workload
 
 Closures:
 
