@@ -10,9 +10,15 @@ Closures:
 | firefox | 373 | 1541 MiB | ~520 MiB |
 | nixos-minimal | 493 | 1033 MiB | ~420 MiB |
 
-Throughput is **wire bytes / wall time**; for zstd variants that is the
-compressed size, so a higher number means the server pushed more compressed
-bytes per second, not more uncompressed payload.
+**Wire MiB/s** = bytes read off the TCP socket / wall-clock for one full
+closure pass. The client never decompresses, so:
+
+- `*-none` rows: raw NAR throughput (numerator = uncompressed NAR size).
+- `*-zstd` rows: compressed throughput (numerator = zstd bytes on the wire).
+
+The two blocks are therefore not directly comparable bar-to-bar; the chart
+separates them with a divider. To compare end-to-end, look at `time_s` in
+`ryan.csv` instead.
 
 Files:
 

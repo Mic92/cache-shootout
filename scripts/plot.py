@@ -76,14 +76,19 @@ def split_server(name: str) -> tuple[str, str]:
 def order_servers(df: pd.DataFrame) -> list[str]:
     """One ordering shared by every subplot.
 
-    Sort by mean sequential-NAR throughput (high → low) so the eye reads
-    "fastest at the top" consistently across closures and concurrency levels.
+    Group by compression first (uncompressed block, then zstd block) and sort
+    each block by mean sequential-NAR throughput. Mixing the two confused
+    readers because zstd "wire MiB/s" counts compressed bytes and is not
+    directly comparable to the uncompressed bars.
     """
     seq = df[df["metric"] == "nar_download_c1"]
     base = seq if not seq.empty else df
-    key = "mibps" if base["mibps"].notna().any() else "time_s"
-    asc = key == "time_s"
-    return list(base.groupby("server")[key].mean().sort_values(ascending=asc).index)
+    speed = base.groupby("server")["mibps"].mean()
+    servers = list(speed.index)
+    servers.sort(
+        key=lambda s: (split_server(s)[1] != "none", -float(speed.get(s, 0.0)))
+    )
+    return servers
 
 
 def plot(df: pd.DataFrame, out: Path) -> None:
@@ -124,7 +129,7 @@ def plot(df: pd.DataFrame, out: Path) -> None:
                 fmt = "{:.1f}"
             else:
                 d = d.assign(value=d["mibps"])
-                xlabel = "wire MiB/s  ↑"
+                xlabel = "socket MiB/s  ↑  (compressed for zstd)"
                 fmt = "{:.0f}"
             # Reindex onto the full server list so every panel has exactly one
             # patch per server in a known order; this makes the manual
@@ -152,6 +157,10 @@ def plot(df: pd.DataFrame, out: Path) -> None:
                 patch.set_edgecolor("white")
                 if server in zstd_servers:
                     patch.set_hatch("//")
+            # Visual divider between the uncompressed and zstd blocks.
+            n_none = sum(1 for s in server_order if s not in zstd_servers)
+            if 0 < n_none < len(server_order):
+                ax.axhline(n_none - 0.5, color="0.5", lw=0.8)
             conc = metric.removeprefix("nar_download_c")
             title = "narinfo" if metric == "narinfo_all" else f"NAR, {conc} conn"
             ax.set_title(f"{closure} — {title}")
