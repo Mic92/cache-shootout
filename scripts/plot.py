@@ -94,7 +94,7 @@ def order_servers(df: pd.DataFrame, unit: str) -> list[str]:
     return servers
 
 
-def plot(df: pd.DataFrame, out: Path, unit: str) -> None:
+def plot(df: pd.DataFrame, out: Path, unit: str, scale: str) -> None:
     sns.set_theme(style="whitegrid", context="notebook")
     server_order = order_servers(df, unit)
     # Colour by underlying implementation so the none/zstd pair of each server
@@ -149,13 +149,15 @@ def plot(df: pd.DataFrame, out: Path, unit: str) -> None:
                 .reset_index()
             )
             sns.barplot(data=d, y="server", x="value", ax=ax, color="0.7")
-            # Spread spans ~2 orders of magnitude (nginx sendfile vs. on-the-fly
-            # NAR streamers / perl); log keeps the tail readable.
-            ax.set_xscale("log")
+            # Spread spans ~2-3 orders of magnitude (nginx sendfile vs.
+            # on-the-fly NAR streamers / perl); log keeps the tail readable,
+            # linear makes absolute gaps obvious at the cost of flattening the
+            # fast end into the axis.
+            ax.set_xscale(scale)
             # Leave headroom on the right so the value labels of the longest
             # bars are not clipped against the axis frame.
             lo, hi = ax.get_xlim()
-            ax.set_xlim(lo, hi * 2)
+            ax.set_xlim(lo, hi * (2 if scale == "log" else 1.12))
             _annotate_h(ax, fmt)
             # Hatch the zstd variants so compression reads as a texture, not a
             # separate colour family.
@@ -176,7 +178,7 @@ def plot(df: pd.DataFrame, out: Path, unit: str) -> None:
             ax.set_ylabel("")
 
     fig.suptitle(
-        "Nix binary cache shootout   (↓ lower is better, ↑ higher is better, log scale)",
+        f"Nix binary cache shootout   (↓ lower is better, ↑ higher is better, {scale} scale)",
         y=1.02,
         fontsize=15,
     )
@@ -213,6 +215,7 @@ def main() -> None:
         help="NAR panels: wall time per closure (comparable across compression) "
         "or wire MiB/s (compressed bytes for zstd variants)",
     )
+    ap.add_argument("--scale", choices=["log", "linear"], default="log")
     ap.add_argument(
         "--csv-out",
         type=Path,
@@ -228,7 +231,7 @@ def main() -> None:
             args.csv_out, index=False
         )
         print(f"wrote {args.csv_out}")
-    plot(df, args.out, args.unit)
+    plot(df, args.out, args.unit, args.scale)
 
 
 if __name__ == "__main__":
