@@ -997,6 +997,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_16": {
+      "locked": {
+        "lastModified": 1776329215,
+        "narHash": "sha256-a8BYi3mzoJ/AcJP8UldOx8emoPRLeWqALZWu4ZvjPXw=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "b86751bc4085f48661017fa226dee99fab6c651b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1776329215,
@@ -1256,7 +1272,65 @@
         "ncps": "ncps",
         "nix-serve": "nix-serve",
         "nix-serve-ng": "nix-serve-ng",
-        "nixpkgs": "nixpkgs_15"
+        "nixpkgs": "nixpkgs_15",
+        "rustfs": "rustfs",
+        "snix": "snix"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "rustfs",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776481912,
+        "narHash": "sha256-Xq7p+Ex3YHFAd+fFFLOYw2Wv67582X7SAmrEDtIDZQ4=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "e611106c527e8ab0adbb641183cda284411d575c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "rustfs": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_16",
+        "rust-overlay": "rust-overlay"
+      },
+      "locked": {
+        "lastModified": 1776659242,
+        "narHash": "sha256-biJ46HmQ5zyuWB6wa51m8YbR0VxslSPI0FOQKUgwwMY=",
+        "owner": "rustfs",
+        "repo": "rustfs",
+        "rev": "12f355a3bc35c1be93827dcc1a2099954676fe0f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rustfs",
+        "repo": "rustfs",
+        "type": "github"
+      }
+    },
+    "snix": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1776424857,
+        "narHash": "sha256-pXRO6pHWfgBSMokoXhdoTAAF6s3ycObxYz80LaP/1/o=",
+        "ref": "refs/heads/canon",
+        "rev": "e952b5ae99242baed8f6ffa1b98aa80f4f02911e",
+        "revCount": 22297,
+        "type": "git",
+        "url": "https://git.snix.dev/snix/snix"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.snix.dev/snix/snix"
       }
     },
     "systems": {

@@ -14,6 +14,9 @@ Servers under test:
 - nix-serve-ng behind nginx with on-the-fly zstd transfer encoding
 - nginx (static flat-file `file://` cache; `none` and `zstd` NAR compression)
 - attic (sqlite + local storage, closure pushed up-front; `none` and `zstd`)
+- minio / rustfs (S3 object store holding a `nix copy --to s3://` cache,
+  bucket made anonymously readable; `none` and `zstd`)
+- snix (`snix-store daemon` + `nar-bridge`, closure pushed up-front)
 
 Each server is built from its own upstream flake (see `flake.nix` inputs),
 so `nix flake update <input>` bumps an individual implementation.
@@ -44,6 +47,8 @@ Because the unit is seconds, hatched and solid bars are directly comparable.
 | `ncps-zstd` | ncps proxying that nginx-zstd cache, so it stores/serves `.nar.zst` |
 | `attic-zstd` | atticd configured with `compression.type = "zstd"` chunk storage |
 | `harmonia-zstd` | client sends `Accept-Encoding: zstd`, harmonia compresses the NAR stream on the fly |
+| `snix-zstd` | client sends `Accept-Encoding: zstd`, nar-bridge compresses the NAR stream on the fly |
+| `minio-zstd` / `rustfs-zstd` | `nix copy --to s3://…?compression=zstd`, object store serves `.nar.zst` |
 | `nix-serve-ng+nginx-zstd` | nginx reverse-proxy in front of nix-serve-ng, `zstd on;` filter |
 
 ### Caveats
@@ -93,6 +98,8 @@ HTML report: `target/criterion/report/index.html`.
 
 ## Knobs
 
+- `BENCH_SERVERS` — comma-separated server names (e.g.
+  `harmonia-none,snix,minio-zstd`); unset = all.
 - `BENCH_CLOSURES` — comma-separated closure names
   (default: `firefox,nixos-minimal`). Each name resolves to
   `.#packages.<system>.closure-<name>`; a literal flake ref containing `#`

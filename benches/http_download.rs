@@ -3,9 +3,32 @@ mod common;
 use common::servers::{RunningCache, Server};
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
 use futures::StreamExt;
+use std::collections::HashSet;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
+
+/// Subset of servers to run, from `BENCH_SERVERS` (comma-separated names).
+/// Handy for smoke-testing a single new backend without spinning up all 16.
+fn selected_servers() -> Vec<Server> {
+    let all = Server::all();
+    let Some(spec) = std::env::var("BENCH_SERVERS").ok() else {
+        return all.to_vec();
+    };
+    let want: HashSet<String> = spec
+        .split(',')
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .collect();
+    let known: HashSet<String> = all.iter().map(|s| s.name().to_string()).collect();
+    for w in &want {
+        assert!(known.contains(w), "BENCH_SERVERS: unknown server '{w}'");
+    }
+    all.iter()
+        .copied()
+        .filter(|s| want.contains(s.name()))
+        .collect()
+}
 
 /// Returns the relative NAR URL advertised in the narinfo.
 ///
@@ -103,7 +126,7 @@ fn benchmark(c: &mut Criterion) {
             Arc::new(paths.iter().map(|p| common::store_path_hash(p)).collect());
         eprintln!("closure '{cname}': {} store paths", hashes.len());
 
-        for &srv in Server::all() {
+        for srv in selected_servers() {
             eprintln!("== [{cname}] starting {} ==", srv.name());
             let cache = rt.block_on(srv.start(&client, croot));
             let (urls, bytes) = rt.block_on(prepare(&client, &cache, &hashes));

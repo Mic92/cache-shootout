@@ -11,6 +11,12 @@
     nix-serve-ng.url = "github:aristanetworks/nix-serve-ng";
     ncps.url = "github:kalbasit/ncps";
     attic.url = "github:zhaofengli/attic";
+    rustfs.url = "github:rustfs/rustfs";
+    # snix is a depot-style monorepo, not a flake; build via its default.nix.
+    snix = {
+      url = "git+https://git.snix.dev/snix/snix";
+      flake = false;
+    };
   };
 
   outputs =
@@ -22,6 +28,8 @@
       nix-serve-ng,
       ncps,
       attic,
+      rustfs,
+      snix,
     }:
     let
       forAllSystems = nixpkgs.lib.genAttrs [
@@ -88,6 +96,15 @@
           ncpsDbmatePkg = ncps.packages.${system}.dbmate-wrapper;
           atticServerPkg = attic.packages.${system}.attic-server;
           atticClientPkg = attic.packages.${system}.attic-client;
+          # The depot's `snix.nar-bridge` / `snix.store` attrs override
+          # `runTests = true`; reach for the bare crate2nix builds instead so
+          # the bench shell does not depend on the snix test suite passing.
+          rustfsPkg = rustfs.packages.${system}.default;
+          # The depot moved binaries under `snix.cli.*`; the old `snix.store` /
+          # `snix.nar-bridge` attrs are lib-only and would give an empty $out.
+          snixDepot = import snix { localSystem = system; };
+          snixStorePkg = snixDepot.snix.cli.store;
+          snixNarBridgePkg = snixDepot.snix.cli.nar-bridge;
           # nginx with the third-party zstd filter so it can transfer-encode
           # proxied NAR streams; the stock build only ships gzip.
           nginxZstd = pkgs.nginx.override {
@@ -117,6 +134,12 @@
               ncpsDbmatePkg
               atticServerPkg
               atticClientPkg
+              snixStorePkg
+              snixNarBridgePkg
+              pkgs.minio
+              pkgs.minio-client
+              rustfsPkg
+              pkgs.jq
               nginxZstd
               plotPython
             ];
@@ -133,11 +156,15 @@
             ATTICD_BIN = "${atticServerPkg}/bin/atticd";
             ATTICADM_BIN = "${atticServerPkg}/bin/atticadm";
             ATTIC_BIN = "${atticClientPkg}/bin/attic";
+            MINIO_BIN = "${pkgs.minio}/bin/minio";
+            MC_BIN = "${pkgs.minio-client}/bin/mc";
+            RUSTFS_BIN = "${rustfsPkg}/bin/rustfs";
+            SNIX_STORE_BIN = "${snixStorePkg}/bin/snix-store";
+            NAR_BRIDGE_BIN = "${snixNarBridgePkg}/bin/snix-nar-bridge";
             NGINX_BIN = "${nginxZstd}/bin/nginx";
 
             # Default workload set; override on the command line if needed.
-            BENCH_CLOSURES =
-              if pkgs.stdenv.hostPlatform.isLinux then "firefox,nixos-minimal" else "firefox";
+            BENCH_CLOSURES = if pkgs.stdenv.hostPlatform.isLinux then "firefox,nixos-minimal" else "firefox";
           };
         }
       );

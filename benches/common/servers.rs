@@ -32,6 +32,12 @@ impl Compression {
 }
 
 #[derive(Clone, Copy)]
+pub enum S3Backend {
+    Minio,
+    RustFs,
+}
+
+#[derive(Clone, Copy)]
 pub enum Server {
     /// `Zstd` exercises harmonia's actix `Compress` middleware: same NAR
     /// stream, transfer-encoded on the fly when the client asks for it.
@@ -52,6 +58,16 @@ pub enum Server {
     /// atticd with a sqlite DB and local chunk storage. The closure is pushed
     /// up-front via `attic push`, so the benchmark measures pull throughput.
     Attic(Compression),
+    /// An S3-compatible object store holding a `nix copy --to s3://` flat-file
+    /// cache. The bucket is made anonymously readable so the bench client
+    /// fetches `http://host:port/<bucket>/<key>` directly without sigv4;
+    /// measures the object store's plain GET path, not any Nix-aware code.
+    S3(S3Backend, Compression),
+    /// snix-store daemon (object-store + redb on disk) fronted by nar-bridge
+    /// for the HTTP binary cache protocol. Closure is pushed up-front via
+    /// `snix-store copy`; nar-bridge re-assembles the NAR per request and, if
+    /// asked, zstd-encodes it via HTTP Content-Encoding.
+    Snix(Compression),
 }
 
 impl Server {
@@ -68,6 +84,12 @@ impl Server {
             Server::Nginx(Compression::Zstd),
             Server::Attic(Compression::None),
             Server::Attic(Compression::Zstd),
+            Server::S3(S3Backend::Minio, Compression::None),
+            Server::S3(S3Backend::Minio, Compression::Zstd),
+            Server::S3(S3Backend::RustFs, Compression::None),
+            Server::S3(S3Backend::RustFs, Compression::Zstd),
+            Server::Snix(Compression::None),
+            Server::Snix(Compression::Zstd),
         ]
     }
 
@@ -84,6 +106,12 @@ impl Server {
             Server::Nginx(Compression::Zstd) => "nginx-zstd",
             Server::Attic(Compression::None) => "attic-none",
             Server::Attic(Compression::Zstd) => "attic-zstd",
+            Server::S3(S3Backend::Minio, Compression::None) => "minio-none",
+            Server::S3(S3Backend::Minio, Compression::Zstd) => "minio-zstd",
+            Server::S3(S3Backend::RustFs, Compression::None) => "rustfs-none",
+            Server::S3(S3Backend::RustFs, Compression::Zstd) => "rustfs-zstd",
+            Server::Snix(Compression::None) => "snix-none",
+            Server::Snix(Compression::Zstd) => "snix-zstd",
         }
     }
 
@@ -96,6 +124,8 @@ impl Server {
             Server::Ncps(c) => start_ncps(client, closure_root, c).await,
             Server::Nginx(c) => start_nginx(client, closure_root, c).await,
             Server::Attic(c) => start_attic(client, closure_root, c).await,
+            Server::S3(b, c) => start_s3(client, closure_root, b, c).await,
+            Server::Snix(c) => start_snix(client, closure_root, c).await,
         }
     }
 }
@@ -569,6 +599,250 @@ interval = "0 hours"
         base_url: base,
         accept_encoding: None,
         _guards: vec![guard],
+    }
+}
+
+async fn start_s3(
+    client: &reqwest::Client,
+    closure_root: &str,
+    backend: S3Backend,
+    comp: Compression,
+) -> RunningCache {
+    let dir = TempDir::new().unwrap();
+    let data = dir.path().join("data");
+    let mc_dir = dir.path().join("mc");
+    // nix's narinfo disk cache keys S3 binary caches by their canonical URL
+    // (`s3://<bucket>`, params stripped), so two instances with the same
+    // bucket name would share cache rows and the second `nix copy` would see
+    // "0 paths to copy". Point XDG_CACHE_HOME/HOME at the tempdir so each
+    // instance starts from a clean slate (and ignores ~/.aws).
+    let nix_home = dir.path().join("nix-home");
+    std::fs::create_dir_all(&data).unwrap();
+    std::fs::create_dir_all(&mc_dir).unwrap();
+    std::fs::create_dir_all(&nix_home).unwrap();
+
+    let port = pick_unused_port();
+    let user = "benchadmin";
+    let pass = "benchadmin12345";
+
+    let mut cmd;
+    match backend {
+        S3Backend::Minio => {
+            cmd = Command::new(bin("MINIO_BIN", "minio"));
+            cmd.args([
+                "server",
+                data.to_str().unwrap(),
+                "--quiet",
+                "--address",
+                &format!("127.0.0.1:{port}"),
+                "--console-address",
+                // minio insists on binding a console; park it on an ephemeral
+                // port we never touch.
+                &format!("127.0.0.1:{}", pick_unused_port()),
+            ])
+            .env("MINIO_ROOT_USER", user)
+            .env("MINIO_ROOT_PASSWORD", pass)
+            .env("MINIO_BROWSER", "off")
+            .env("HOME", dir.path());
+        }
+        S3Backend::RustFs => {
+            cmd = Command::new(bin("RUSTFS_BIN", "rustfs"));
+            cmd.args([
+                "server",
+                data.to_str().unwrap(),
+                "--address",
+                &format!("127.0.0.1:{port}"),
+                "--access-key",
+                user,
+                "--secret-key",
+                pass,
+            ])
+            .env("RUSTFS_CONSOLE_ENABLE", "false")
+            // Background scanner / heal threads add noise to a single-node
+            // throughput benchmark.
+            .env("RUSTFS_SCANNER_ENABLED", "false")
+            .env("RUSTFS_HEAL_ENABLED", "false")
+            .env("RUST_LOG", "warn")
+            .env("HOME", dir.path());
+        }
+    }
+    cmd.stderr(Stdio::null());
+    let mut guard = spawn(cmd, "s3 backend");
+    guard.keep(dir);
+    let pid = guard_pid(&guard);
+    // S3 backends accept TCP before the storage layer is ready; mc retries
+    // ListBuckets internally so the alias/mb steps below double as readiness.
+    wait_for_port(port, pid, Duration::from_secs(60)).await;
+
+    let endpoint = format!("http://127.0.0.1:{port}");
+    let bucket = "nix-cache";
+
+    // Use minio's `mc` against either backend (both speak S3) to create the
+    // bucket and open it for anonymous GETs, so the bench client can fetch
+    // `http://endpoint/<bucket>/<key>` without signing requests.
+    let mc = bin("MC_BIN", "mc");
+    let mc_run = |args: &[&str], what: &str| {
+        let mut c = Command::new(&mc);
+        c.arg("--config-dir").arg(&mc_dir).args(args);
+        run(&mut c, what);
+    };
+    // rustfs (and minio on slow disks) accepts TCP before the storage layer
+    // is ready and answers `Service not ready`; mc does not retry that, so
+    // poll `alias set` ourselves until it sticks.
+    let alias_ok = (0..60).any(|_| {
+        let ok = Command::new(&mc)
+            .arg("--config-dir")
+            .arg(&mc_dir)
+            .args(["alias", "set", "bench", &endpoint, user, pass])
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status()
+            .map(|s| s.success())
+            .unwrap_or(false);
+        if !ok {
+            std::thread::sleep(Duration::from_millis(500));
+        }
+        ok
+    });
+    assert!(alias_ok, "s3 backend at {endpoint} never became ready");
+    mc_run(&["mb", &format!("bench/{bucket}")], "mc mb");
+    mc_run(
+        &["anonymous", "set", "download", &format!("bench/{bucket}")],
+        "mc anonymous set download",
+    );
+
+    let store_url = format!(
+        "s3://{bucket}?endpoint={endpoint}&region=us-east-1&compression={}",
+        comp.nix_param()
+    );
+    eprintln!("s3: nix copy closure to {store_url} ...");
+    run(
+        Command::new("nix")
+            .args([
+                "--extra-experimental-features",
+                "nix-command",
+                "copy",
+                "--to",
+                &store_url,
+                closure_root,
+            ])
+            .env("AWS_ACCESS_KEY_ID", user)
+            .env("AWS_SECRET_ACCESS_KEY", pass)
+            .env("HOME", &nix_home)
+            .env("XDG_CACHE_HOME", &nix_home)
+            .env_remove("NIX_REMOTE"),
+        "nix copy (s3)",
+    );
+
+    let base = format!("{endpoint}/{bucket}");
+    wait_for_cache_info(client, &base, Duration::from_secs(30)).await;
+
+    RunningCache {
+        name: Server::S3(backend, comp).name(),
+        base_url: base,
+        accept_encoding: None,
+        _guards: vec![guard],
+    }
+}
+
+async fn start_snix(
+    client: &reqwest::Client,
+    closure_root: &str,
+    comp: Compression,
+) -> RunningCache {
+    let dir = TempDir::new().unwrap();
+    let data = dir.path().to_path_buf();
+
+    // Both `snix-store copy` and nar-bridge can open the on-disk blob /
+    // directory / pathinfo backends directly. We skip the gRPC daemon hop:
+    // co-locating nar-bridge with the storage is the realistic deployment for
+    // a binary cache, and routing every chunk through tonic added ~40 ms per
+    // call here, dominating the benchmark.
+    let blob = format!("objectstore+file:{}/blobs", data.display());
+    let dirs = format!("redb:{}/directories.redb", data.display());
+    let pinfo = format!("redb:{}/pathinfo.redb", data.display());
+    let snix_env = |c: &mut Command| {
+        c.env("BLOB_SERVICE_ADDR", &blob)
+            .env("DIRECTORY_SERVICE_ADDR", &dirs)
+            .env("PATH_INFO_SERVICE_ADDR", &pinfo)
+            // The tonic trace propagator logs a WARN per request when no OTEL
+            // layer is configured; silence it so it doesn't swamp bench output.
+            .env("RUST_LOG", "error");
+    };
+
+    // `snix-store copy` ingests from /nix/store using the path metadata list
+    // emitted by `nix path-info --json`. Nix ≥2.23 returns an object keyed by
+    // store path; snix wants a flat list with a `path` field, so reshape it.
+    eprintln!("snix: copying closure {closure_root} ...");
+    let pi = Command::new("nix")
+        .args([
+            "--extra-experimental-features",
+            "nix-command",
+            "path-info",
+            "--json",
+            "--closure-size",
+            "--recursive",
+            closure_root,
+        ])
+        .output()
+        .expect("nix path-info --json");
+    assert!(
+        pi.status.success(),
+        "nix path-info --json failed: {}",
+        String::from_utf8_lossy(&pi.stderr)
+    );
+    let mut jq = Command::new("jq")
+        .arg(
+            "if type == \"array\" then . \
+             else to_entries | map({path: .key} + .value) end",
+        )
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .spawn()
+        .expect("jq");
+    jq.stdin.take().unwrap().write_all(&pi.stdout).unwrap();
+    let jq_out = jq.wait_with_output().expect("jq wait");
+    assert!(jq_out.status.success(), "jq reshape failed");
+
+    let mut copy = Command::new(bin("SNIX_STORE_BIN", "snix-store"));
+    copy.args(["copy", "-"])
+        .stdin(Stdio::piped())
+        .stdout(Stdio::null());
+    snix_env(&mut copy);
+    let mut copy_child = copy.spawn().expect("snix-store copy");
+    copy_child
+        .stdin
+        .take()
+        .unwrap()
+        .write_all(&jq_out.stdout)
+        .unwrap();
+    let copy_status = copy_child.wait().expect("snix-store copy wait");
+    assert!(copy_status.success(), "snix-store copy failed");
+
+    // nar-bridge speaks the Nix HTTP binary cache protocol on top of those
+    // backends and zstd-encodes the NAR stream via HTTP Content-Encoding when
+    // the client asks for it.
+    let port = pick_unused_port();
+    let mut cmd = Command::new(bin("NAR_BRIDGE_BIN", "snix-nar-bridge"));
+    cmd.args(["-l", &format!("127.0.0.1:{port}")]);
+    snix_env(&mut cmd);
+    cmd.stderr(Stdio::null());
+    let mut bridge_guard = spawn(cmd, "snix-nar-bridge");
+    bridge_guard.keep(dir);
+    let bridge_pid = guard_pid(&bridge_guard);
+    wait_for_port(port, bridge_pid, Duration::from_secs(30)).await;
+    let base = format!("http://127.0.0.1:{port}");
+    wait_for_cache_info(client, &base, Duration::from_secs(30)).await;
+
+    RunningCache {
+        name: Server::Snix(comp).name(),
+        base_url: base,
+        accept_encoding: match comp {
+            Compression::None => None,
+            Compression::Zstd => Some("zstd"),
+        },
+        _guards: vec![bridge_guard],
     }
 }
 
