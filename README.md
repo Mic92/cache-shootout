@@ -10,7 +10,7 @@ Servers under test:
 - harmonia
 - nix-serve (perl/starman)
 - nix-serve-ng
-- ncps (proxying a local harmonia, measured warm)
+- ncps (proxying a local upstream, measured warm)
 - nix-serve-ng behind nginx with on-the-fly zstd transfer encoding
 - nginx (static flat-file `file://` cache; `none` and `zstd` NAR compression)
 - attic (sqlite + local storage, closure pushed up-front; `none` and `zstd`)
@@ -55,22 +55,41 @@ Because the unit is seconds, hatched and solid bars are directly comparable.
   defaults.
 - For ncps the upstream fetch is excluded by the warm-up pass.
 
+## Committed results
+
+| | |
+|---|---|
+| CPU | AMD EPYC 7713P, 64 cores / 128 threads |
+| RAM | 991 GiB |
+| OS | NixOS 25.11 (Xantusia), Linux 6.8.0 |
+| Nix | 2.30.0pre |
+| Storage | ZFS on Dell Ent NVMe AGN MU AIC 1.6 TB; `/nix/store`, `/scratch`, `/tmp` all on this pool (no tmpfs) |
+
+All servers and the benchmark client run on this machine over loopback. The
+closure is hot in ARC/page cache after the warm-up pass, so results reflect
+CPU and software overhead rather than disk bandwidth.
+
+Workload closures:
+
+| name | paths | NAR (none) | NAR (zstd) |
+|---|---|---|---|
+| firefox | 373 | 1541 MiB | ~520 MiB |
+| nixos-minimal | 493 | 1033 MiB | ~420 MiB |
+
+Artefacts in [`results/`](results/):
+
+- `shootout.png` — the chart above.
+- `shootout.csv` — flat `(closure, metric, server, time_s)` table.
+- `bench.log` — raw `cargo bench` output.
+
 ## Run
 
 ```sh
 nix develop -c cargo bench
-```
-
-HTML report: `target/criterion/report/index.html`.
-
-Seaborn wall-time chart + CSV:
-
-```sh
 nix develop -c python3 scripts/plot.py --out results/shootout.png --csv-out results/shootout.csv
 ```
 
-See [`results/`](results/README.md) for the committed run and machine
-details.
+HTML report: `target/criterion/report/index.html`.
 
 ## Knobs
 
