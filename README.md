@@ -7,16 +7,23 @@ Criterion benchmark comparing Nix binary cache servers over raw HTTP
 
 Servers under test:
 
-- harmonia
-- nix-serve (perl/starman)
-- nix-serve-ng
-- ncps (proxying a local upstream, measured warm)
-- nix-serve-ng behind nginx with on-the-fly zstd transfer encoding
-- nginx (static flat-file `file://` cache; `none` and `zstd` NAR compression)
-- attic (sqlite + local storage, closure pushed up-front; `none` and `zstd`)
-- minio / rustfs (S3 object store holding a `nix copy --to s3://` cache,
-  bucket made anonymously readable; `none` and `zstd`)
-- snix (`snix-store daemon` + `nar-bridge`, closure pushed up-front)
+- [harmonia](https://github.com/nix-community/harmonia)
+- [nix-serve](https://github.com/edolstra/nix-serve) (perl/starman)
+- [nix-serve-ng](https://github.com/aristanetworks/nix-serve-ng)
+- [ncps](https://github.com/kalbasit/ncps) (proxying a local upstream,
+  measured warm)
+- nix-serve-ng behind [nginx](https://nginx.org/) with on-the-fly zstd
+  transfer encoding
+- [nginx](https://nginx.org/) (static flat-file `file://` cache; `none` and
+  `zstd` NAR compression)
+- [attic](https://github.com/zhaofengli/attic) (sqlite + local storage,
+  closure pushed up-front; `none` and `zstd`)
+- [minio](https://github.com/minio/minio) /
+  [rustfs](https://github.com/rustfs/rustfs) (S3 object store holding a
+  `nix copy --to s3://` cache, bucket made anonymously readable; `none`
+  and `zstd`)
+- [snix](https://snix.dev/) (`snix-store copy` → on-disk castore →
+  `nar-bridge`, closure pushed up-front)
 
 Each server is built from its own upstream flake (see `flake.nix` inputs),
 so `nix flake update <input>` bumps an individual implementation.
